@@ -10,12 +10,16 @@
     "jsx": "react-jsx",
     "strict": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -27,7 +31,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["bun"]
+    "types": [
+      "bun"
+    ]
   },
   "extends": "expo/tsconfig.base"
 }
