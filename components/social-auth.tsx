@@ -2,7 +2,6 @@ import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Text,
   TouchableOpacity,
   View,
@@ -29,7 +28,7 @@ export function SocialAuth() {
           setIsLoading(false);
         },
         onSuccess: () => {
-          Alert.alert("Signin Successful!");
+          setIsLoading(false);
         },
         onFinished: () => {
           setIsLoading(false);
@@ -53,7 +52,7 @@ export function SocialAuth() {
           setIsLoading(false);
         },
         onSuccess: () => {
-          Alert.alert("Signin Successful!");
+          setIsLoading(false);
         },
         onFinished: () => {
           setIsLoading(false);
