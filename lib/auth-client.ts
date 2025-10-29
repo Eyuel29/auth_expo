@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import Constants from "expo-constants";
 
 export const authClient = createAuthClient({
-	baseURL: process.env.EXPO_PUBLIC_SERVER_URL,
+	baseURL: process.env.EXPO_PUBLIC_SERVER_URL || "https://auth-backend-tbhw.onrender.com",
 	plugins: [
 		expoClient({
 			scheme: Constants.expoConfig?.scheme as string,

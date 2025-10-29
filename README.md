@@ -16,41 +16,7 @@ bun --revision
 # Example output: 1.x.y+b7982ac13189
 ```
 
----
-
-### 2. Install EAS CLI
-
-```bash
-bun add eas-cli@latest --global
-```
-
-Verify installation:
-
-```bash
-eas -v
-```
-
-Login to your Expo account:
-
-```bash
-eas login
-```
-
-Initialize your project:
-
-```bash
-eas init
-```
-
-Build your app:
-
-```bash
-eas build
-```
-
----
-
-### 3. Run the App
+### 2. Run the App
 
 Start your app with:
 
@@ -58,18 +24,10 @@ Start your app with:
 bun start
 ```
 
-Follow the prompts:
-
-* Press **`a`** to open Android emulator/device
-* Press **`Shift + a`** to emulator/device
-* Press **`w`** to open in web browser
-
----
-
-### 4. Environment Variables
+### 3. Environment Variables
 
 Set up your environment file (`.env`):
 
 ```
-EXPO_PUBLIC_SERVER_URL=https://your-backend-url.com
+EXPO_PUBLIC_SERVER_URL=https://auth-backend-tbhw.onrender.com
 ```
