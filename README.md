@@ -61,8 +61,8 @@ bun start
 Follow the prompts:
 
 * Press **`a`** to open Android emulator/device
-* Press **`Shift + a`** to open in web browser
-* Press **`w`** to open in web
+* Press **`Shift + a`** to emulator/device
+* Press **`w`** to open in web browser
 
 ---
 
