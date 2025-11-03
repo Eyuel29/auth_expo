@@ -14,7 +14,14 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "type-check": "tsc --noEmit",
     "check-all": "npm run type-check && npm run lint && npm run format:check",
-    "prepare": "husky"
+    "prepare": "husky",
+    "ci": "npm run check-all",
+    "ci:audit": "npm audit --audit-level=moderate",
+    "build:web": "npx expo export --platform web",
+    "build:preview": "eas build --platform all --profile preview",
+    "build:production": "eas build --platform all --profile production",
+    "submit:ios": "eas submit --platform ios",
+    "submit:android": "eas submit --platform android"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

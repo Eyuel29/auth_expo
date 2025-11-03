@@ -1,0 +1,39 @@
+# Labeler configuration
+# Automatically label PRs based on file paths
+
+'documentation':
+  - '**/*.md'
+  - 'docs/**/*'
+
+'dependencies':
+  - 'package.json'
+  - 'package-lock.json'
+
+'ci/cd':
+  - '.github/**/*'
+  - 'eas.json'
+
+'configuration':
+  - '*.config.js'
+  - '*.config.ts'
+  - 'app.json'
+  - 'tsconfig.json'
+  - '.eslintrc*'
+  - '.prettierrc*'
+  - '.editorconfig'
+
+'authentication':
+  - 'contexts/auth-context.tsx'
+  - 'lib/auth/**/*'
+  - 'app/(auth)/**/*'
+
+'ui':
+  - 'app/**/*.tsx'
+  - 'components/**/*'
+
+'code-quality':
+  - '.eslintrc*'
+  - '.prettierrc*'
+  - 'eslint.config.js'
+  - '.husky/**/*'
+
