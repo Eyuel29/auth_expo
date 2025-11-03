@@ -1,39 +1,54 @@
 # Labeler configuration
 # Automatically label PRs based on file paths
+# Format for actions/labeler@v5
 
-'documentation':
-  - '**/*.md'
-  - 'docs/**/*'
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: '**/*.md'
+  - changed-files:
+    - any-glob-to-any-file: 'docs/**/*'
 
-'dependencies':
-  - 'package.json'
-  - 'package-lock.json'
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file: 'package.json'
+  - changed-files:
+    - any-glob-to-any-file: 'package-lock.json'
 
-'ci/cd':
-  - '.github/**/*'
-  - 'eas.json'
+ci/cd:
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
+  - changed-files:
+    - any-glob-to-any-file: 'eas.json'
 
-'configuration':
-  - '*.config.js'
-  - '*.config.ts'
-  - 'app.json'
-  - 'tsconfig.json'
-  - '.eslintrc*'
-  - '.prettierrc*'
-  - '.editorconfig'
+configuration:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '*.config.js'
+      - '*.config.ts'
+      - 'app.json'
+      - 'tsconfig.json'
+      - '.eslintrc*'
+      - '.prettierrc*'
+      - '.editorconfig'
 
-'authentication':
-  - 'contexts/auth-context.tsx'
-  - 'lib/auth/**/*'
-  - 'app/(auth)/**/*'
+authentication:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'contexts/auth-context.tsx'
+      - 'lib/auth/**/*'
+      - 'app/(auth)/**/*'
 
-'ui':
-  - 'app/**/*.tsx'
-  - 'components/**/*'
+ui:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'app/**/*.tsx'
+      - 'components/**/*'
 
-'code-quality':
-  - '.eslintrc*'
-  - '.prettierrc*'
-  - 'eslint.config.js'
-  - '.husky/**/*'
+code-quality:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.eslintrc*'
+      - '.prettierrc*'
+      - 'eslint.config.js'
+      - '.husky/**/*'
 
