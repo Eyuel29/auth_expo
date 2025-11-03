@@ -1,0 +1,29 @@
+# Code Owners
+# These owners will be the default owners for everything in the repo.
+# Unless a later match takes precedence, they will be requested for
+# review when someone opens a pull request.
+
+# Global owners
+* @eyuel
+
+# Auth and security related files
+/contexts/auth-context.tsx @eyuel
+/lib/auth/ @eyuel
+/app/(auth)/ @eyuel
+
+# CI/CD and configuration
+/.github/ @eyuel
+/eas.json @eyuel
+/app.json @eyuel
+/package.json @eyuel
+
+# Documentation
+/docs/ @eyuel
+/*.md @eyuel
+
+# Code quality configs
+/.eslintrc* @eyuel
+/.prettierrc* @eyuel
+/.husky/ @eyuel
+/eslint.config.js @eyuel
+
