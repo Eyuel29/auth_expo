@@ -1,69 +1,49 @@
-import { Stack } from "expo-router";
-import {
-  DarkTheme,
-  DefaultTheme,
-  type Theme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "../global.css";
-import { NAV_THEME } from "@/lib/constants";
-import React, { useRef } from "react";
-import { useColorScheme } from "@/lib/use-color-scheme";
-import { Platform } from "react-native";
-import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+import '../global.css';
 
-const LIGHT_THEME: Theme = {
-  ...DefaultTheme,
-  colors: NAV_THEME.light,
-};
-const DARK_THEME: Theme = {
-  ...DarkTheme,
-  colors: NAV_THEME.dark,
-};
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
+import { AuthProvider, useAuth } from '@/contexts/auth-context';
 
-export const unstable_settings = {
-  initialRouteName: "Home",
-};
+// Navigation protection component
+function NavigationProtection() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
 
-export default function RootLayout() {
-  const hasMounted = useRef(false);
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
-  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  useEffect(() => {
+    if (isLoading) return;
 
-  useIsomorphicLayoutEffect(() => {
-    if (hasMounted.current) {
-      return;
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!isAuthenticated && !inAuthGroup) {
+      // Redirect to OAuth sign-in if not authenticated
+      // Use push for better web compatibility
+      setTimeout(() => {
+        router.push('/(auth)/oauth-sign-in');
+      }, 100);
+    } else if (isAuthenticated && inAuthGroup) {
+      // Redirect to home if authenticated and in auth screens
+      setTimeout(() => {
+        router.push('/(tabs)');
+      }, 100);
     }
+  }, [isAuthenticated, isLoading, segments]);
 
-    if (Platform.OS === "web") {
-      document.documentElement.classList.add("bg-background");
-    }
-    setAndroidNavigationBar(colorScheme);
-    setIsColorSchemeLoaded(true);
-    hasMounted.current = true;
-  }, []);
-
-  if (!isColorSchemeLoaded) {
-    return null;
-  }
-  return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{ title: "Auth App" }}
-          />
-        </Stack>
-      </GestureHandlerRootView>
-    </ThemeProvider>
-  );
+  return null;
 }
 
-const useIsomorphicLayoutEffect =
-  Platform.OS === "web" && typeof window === "undefined"
-    ? React.useEffect
-    : React.useLayoutEffect;
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <NavigationProtection />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </AuthProvider>
+  );
+}
