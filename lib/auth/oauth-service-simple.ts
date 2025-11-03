@@ -6,7 +6,8 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_SERVER_URL || 'http://localhost:8080';
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_SERVER_URL || 'http://localhost:8080';
 
 export interface OAuthUser {
   id: number;
@@ -14,7 +15,7 @@ export interface OAuthUser {
   username: string;
   avatar_url?: string;
   oauth_provider: 'google' | 'wechat' | 'email';
-  openid?: string;  // For WeChat
+  openid?: string; // For WeChat
 }
 
 export interface OAuthResponse {
@@ -33,10 +34,10 @@ export async function signInWithGoogle(): Promise<OAuthResponse> {
   try {
     // Use backend's mock mode
     const mockCode = `mock_google_code_${Date.now()}`;
-    
+
     const response = await axios.post(`${API_BASE_URL}/auth/google/token`, {
       code: mockCode,
-      redirect_uri: 'http://localhost:8080/auth/google/callback'
+      redirect_uri: 'http://localhost:8080/auth/google/callback',
     });
 
     return {
@@ -45,7 +46,9 @@ export async function signInWithGoogle(): Promise<OAuthResponse> {
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'Failed to sign in with Google');
+      throw new Error(
+        error.response?.data?.message || 'Failed to sign in with Google'
+      );
     }
     throw error;
   }
@@ -61,10 +64,13 @@ export async function signInWithWeChat(): Promise<OAuthResponse> {
   try {
     // Use backend's mock mode
     const mockCode = `mock_wechat_code_${Date.now()}`;
-    
-    const response = await axios.post(`${API_BASE_URL}/auth/wechat/mini-program`, {
-      code: mockCode,
-    });
+
+    const response = await axios.post(
+      `${API_BASE_URL}/auth/wechat/mini-program`,
+      {
+        code: mockCode,
+      }
+    );
 
     return {
       token: response.data.token,
@@ -72,7 +78,9 @@ export async function signInWithWeChat(): Promise<OAuthResponse> {
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'Failed to sign in with WeChat');
+      throw new Error(
+        error.response?.data?.message || 'Failed to sign in with WeChat'
+      );
     }
     throw error;
   }
@@ -90,4 +98,3 @@ export function isWeChatAvailable(): boolean {
   // In a real app, check if WeChat app is installed
   return true; // Mock mode always available
 }
-

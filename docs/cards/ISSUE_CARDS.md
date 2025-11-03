@@ -27,14 +27,17 @@ Copy and paste these directly into GitHub Issues.
 **Labels**: `critical`, `ci/cd`, `automation`, `epic-1`
 
 ### Description
+
 Implement automated CI pipeline that runs on every push and pull request to ensure code quality.
 
 ### User Story
+
 **As a** developer
 **I want** automated CI checks on every push
 **So that** code quality issues are caught early
 
 ### Acceptance Criteria
+
 - [ ] CI runs on push to any branch
 - [ ] CI runs on pull requests
 - [ ] Pipeline checks: install, type-check, lint, test
@@ -44,6 +47,7 @@ Implement automated CI pipeline that runs on every push and pull request to ensu
 - [ ] CI badge added to README
 
 ### Technical Implementation
+
 Create `.github/workflows/ci.yml`:
 
 ```yaml
@@ -83,12 +87,14 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ `.github/workflows/ci.yml` created and working
 - ✅ CI passing on main branch
 - ✅ CI badge in README
 - ✅ Team notified and trained
 
 ### Related Issues
+
 - Depends on: #7 (ESLint), #8 (Prettier)
 - Blocks: #2 (EAS Build Automation)
 
@@ -102,14 +108,17 @@ jobs:
 **Labels**: `critical`, `ci/cd`, `eas-build`, `epic-1`
 
 ### Description
+
 Automate EAS builds for development, preview, and production environments.
 
 ### User Story
+
 **As a** developer
 **I want** automated builds on every push to main
 **So that** I always have a preview version to test
 
 ### Acceptance Criteria
+
 - [ ] Development build on push to `develop` branch
 - [ ] Preview build on pull requests
 - [ ] Production build on push to `main`
@@ -119,6 +128,7 @@ Automate EAS builds for development, preview, and production environments.
 - [ ] Build URL commented on PRs
 
 ### Technical Implementation
+
 Create `.github/workflows/build.yml`:
 
 ```yaml
@@ -158,9 +168,11 @@ jobs:
 ```
 
 ### Environment Variables Needed
+
 - `EXPO_TOKEN` - Expo authentication token (add to GitHub Secrets)
 
 ### Definition of Done
+
 - ✅ `.github/workflows/build.yml` created
 - ✅ EAS credentials configured in GitHub Secrets
 - ✅ Builds triggered automatically
@@ -168,6 +180,7 @@ jobs:
 - ✅ Team trained on build process
 
 ### Related Issues
+
 - Depends on: #1 (CI Pipeline)
 - Related to: #27 (EAS Build Profiles Enhancement)
 
@@ -181,14 +194,17 @@ jobs:
 **Labels**: `critical`, `ci/cd`, `github`, `epic-1`
 
 ### Description
+
 Create automated PR validation with templates and required checks.
 
 ### User Story
+
 **As a** code reviewer
 **I want** automated PR checks before review
 **So that** I can focus on logic rather than syntax
 
 ### Acceptance Criteria
+
 - [ ] PR template auto-loads with checklist
 - [ ] Type checking passes
 - [ ] Linting passes
@@ -203,15 +219,18 @@ Create automated PR validation with templates and required checks.
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Comments added for complex code
@@ -222,12 +241,15 @@ Brief description of changes
 - [ ] Build successful
 
 ## Testing
+
 Describe testing done
 
 ## Screenshots (if applicable)
+
 Add screenshots here
 
 ## Related Issues
+
 Closes #
 ```
 
@@ -263,6 +285,7 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ `.github/pull_request_template.md` created
 - ✅ `.github/workflows/pr-check.yml` created
 - ✅ All checks running on test PR
@@ -270,6 +293,7 @@ jobs:
 - ✅ Team trained on PR process
 
 ### Related Issues
+
 - Depends on: #1 (CI Pipeline)
 - Related to: #10 (Commit Message Standards)
 
@@ -283,14 +307,17 @@ jobs:
 **Labels**: `critical`, `ci/cd`, `github`, `epic-1`
 
 ### Description
+
 Configure branch protection rules to prevent broken code in main branch.
 
 ### User Story
+
 **As a** tech lead
 **I want** protected main branch with required checks
 **So that** unstable code never reaches production
 
 ### Acceptance Criteria
+
 - [ ] `main` branch protected
 - [ ] Require CI to pass before merge
 - [ ] Require 1+ approvals for PRs
@@ -320,6 +347,7 @@ Configure branch protection rules to prevent broken code in main branch.
 3. Test with a PR
 
 ### Definition of Done
+
 - ✅ Branch protection rules configured
 - ✅ Rules tested with test PR
 - ✅ Team trained on workflow
@@ -327,6 +355,7 @@ Configure branch protection rules to prevent broken code in main branch.
 - ✅ Screenshots of settings saved
 
 ### Related Issues
+
 - Depends on: #1, #2, #3
 - Related to: #19 (CONTRIBUTING.md)
 
@@ -340,14 +369,17 @@ Configure branch protection rules to prevent broken code in main branch.
 **Labels**: `critical`, `ci/cd`, `github`, `documentation`, `epic-1`
 
 ### Description
+
 Create standardized issue templates for bugs and features.
 
 ### User Story
+
 **As a** developer
 **I want** standardized issue and PR templates
 **So that** all necessary information is captured
 
 ### Acceptance Criteria
+
 - [ ] Bug report template created
 - [ ] Feature request template created
 - [ ] Templates auto-load when creating issues
@@ -369,28 +401,35 @@ assignees: ''
 ---
 
 ## Bug Description
+
 Clear description of the bug
 
 ## Steps to Reproduce
+
 1. Go to '...'
 2. Click on '...'
 3. See error
 
 ## Expected Behavior
+
 What should happen
 
 ## Actual Behavior
+
 What actually happens
 
 ## Screenshots
+
 If applicable
 
 ## Environment
+
 - OS: [e.g. iOS 17]
 - Device: [e.g. iPhone 15]
 - App Version: [e.g. 1.0.0]
 
 ## Additional Context
+
 Any other information
 ```
 
@@ -406,18 +445,23 @@ assignees: ''
 ---
 
 ## Feature Description
+
 Clear description of the feature
 
 ## Problem it Solves
+
 What problem does this solve?
 
 ## Proposed Solution
+
 How should it work?
 
 ## Alternatives Considered
+
 Other solutions you've thought about
 
 ## Additional Context
+
 Mockups, examples, etc.
 ```
 
@@ -435,12 +479,14 @@ contact_links:
 ```
 
 ### Definition of Done
+
 - ✅ All templates created
 - ✅ Templates tested (create test issues)
 - ✅ Team trained on usage
 - ✅ Examples provided in docs
 
 ### Related Issues
+
 - Related to: #3 (PR Templates)
 
 ---
@@ -453,14 +499,17 @@ contact_links:
 **Labels**: `critical`, `ci/cd`, `github`, `team`, `epic-1`
 
 ### Description
+
 Setup CODEOWNERS for automatic reviewer assignment.
 
 ### User Story
+
 **As a** tech lead
 **I want** automatic reviewer assignment
 **So that** PRs go to the right people
 
 ### Acceptance Criteria
+
 - [ ] CODEOWNERS file created
 - [ ] Teams/individuals assigned to paths
 - [ ] Auto-assigns reviewers on PR creation
@@ -500,6 +549,7 @@ __tests__/ @qa-team
 ```
 
 ### Setup Instructions
+
 1. Create teams in GitHub (if not exists)
 2. Add team members
 3. Create CODEOWNERS file
@@ -508,6 +558,7 @@ __tests__/ @qa-team
 6. Document ownership structure
 
 ### Definition of Done
+
 - ✅ `.github/CODEOWNERS` created
 - ✅ Teams configured
 - ✅ Tested with test PR
@@ -516,6 +567,7 @@ __tests__/ @qa-team
 - ✅ Team notified
 
 ### Related Issues
+
 - Related to: #4 (Branch Protection)
 - Related to: #19 (CONTRIBUTING.md)
 
@@ -531,14 +583,17 @@ __tests__/ @qa-team
 **Labels**: `critical`, `code-quality`, `linting`, `epic-2`
 
 ### Description
+
 Setup ESLint with Expo/React Native rules for consistent code quality.
 
 ### User Story
+
 **As a** developer
 **I want** automatic linting on save
 **So that** I write consistent, error-free code
 
 ### Acceptance Criteria
+
 - [ ] ESLint installed and configured
 - [ ] Expo/React Native rules applied
 - [ ] TypeScript support enabled
@@ -572,15 +627,15 @@ module.exports = {
     'prettier',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
-    'plugin:react-hooks/recommended'
+    'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 2021,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
   rules: {
@@ -598,13 +653,13 @@ module.exports = {
 
     // General
     'no-console': 'warn',
-    'prefer-const': 'error'
+    'prefer-const': 'error',
   },
   settings: {
     react: {
-      version: 'detect'
-    }
-  }
+      version: 'detect',
+    },
+  },
 };
 ```
 
@@ -631,6 +686,7 @@ api/generated/
 ```
 
 ### Definition of Done
+
 - ✅ `.eslintrc.js` created
 - ✅ `.eslintignore` created
 - ✅ All dependencies installed
@@ -641,12 +697,14 @@ api/generated/
 - ✅ Documentation added
 
 ### Testing Checklist
+
 - [ ] Run `npm run lint` - should pass
 - [ ] Create intentional error - should be caught
 - [ ] Open file in VSCode - errors should show
 - [ ] Save file - auto-fix should work
 
 ### Related Issues
+
 - Blocks: #1 (CI Pipeline)
 - Works with: #8 (Prettier)
 - Related to: #33 (VSCode Settings)
@@ -661,14 +719,17 @@ api/generated/
 **Labels**: `critical`, `code-quality`, `formatting`, `epic-2`
 
 ### Description
+
 Setup Prettier for automatic code formatting.
 
 ### User Story
+
 **As a** developer
 **I want** automatic code formatting
 **So that** I never waste time on formatting debates
 
 ### Acceptance Criteria
+
 - [ ] Prettier installed and configured
 - [ ] Format on save enabled
 - [ ] Consistent with ESLint rules
@@ -738,6 +799,7 @@ CHANGELOG.md
 7. Document in CODE_QUALITY.md
 
 ### Definition of Done
+
 - ✅ `.prettierrc` created
 - ✅ `.prettierignore` created
 - ✅ Prettier installed
@@ -748,12 +810,14 @@ CHANGELOG.md
 - ✅ No conflicts with ESLint
 
 ### Testing Checklist
+
 - [ ] Run `npm run format` - should format files
 - [ ] Run `npm run format:check` - should pass
 - [ ] Save file in VSCode - should auto-format
 - [ ] No ESLint/Prettier conflicts
 
 ### Related Issues
+
 - Depends on: #7 (ESLint)
 - Blocks: #9 (Husky Pre-commit)
 - Related to: #33 (VSCode Settings)
@@ -768,14 +832,17 @@ CHANGELOG.md
 **Labels**: `critical`, `code-quality`, `git-hooks`, `epic-2`
 
 ### Description
+
 Setup Husky with lint-staged for pre-commit validation.
 
 ### User Story
+
 **As a** developer
 **I want** code automatically checked before commit
 **So that** I never commit broken code
 
 ### Acceptance Criteria
+
 - [ ] Husky installed
 - [ ] Pre-commit hook runs lint-staged
 - [ ] Only staged files are checked
@@ -805,13 +872,8 @@ npx husky add .husky/pre-commit "npx lint-staged"
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
   }
 }
 ```
@@ -831,10 +893,10 @@ module.exports = {
   '*.{ts,tsx}': [
     'eslint --fix',
     'prettier --write',
-    () => 'tsc --noEmit' // Type check
+    () => 'tsc --noEmit', // Type check
   ],
   '*.{json,md}': ['prettier --write'],
-  '*.{js,jsx}': ['eslint --fix', 'prettier --write']
+  '*.{js,jsx}': ['eslint --fix', 'prettier --write'],
 };
 ```
 
@@ -873,6 +935,7 @@ git commit -m "test: should fail"
 ```
 
 ### Definition of Done
+
 - ✅ Husky installed and initialized
 - ✅ Pre-commit hook created
 - ✅ lint-staged configured
@@ -885,12 +948,14 @@ git commit -m "test: should fail"
 ### Troubleshooting
 
 Common issues:
+
 - Hook not executable: `chmod +x .husky/pre-commit`
 - Hook not running: Check `.git/hooks/` symlink
 - Slow execution: Use lint-staged, not full lint
 - Windows issues: Use Git Bash or WSL
 
 ### Related Issues
+
 - Depends on: #7 (ESLint), #8 (Prettier)
 - Works with: #10 (Commit Message Standards)
 - Related to: #14 (Code Quality Docs)
@@ -905,14 +970,17 @@ Common issues:
 **Labels**: `critical`, `code-quality`, `git-hooks`, `epic-2`
 
 ### Description
+
 Enforce conventional commits with commitlint.
 
 ### User Story
+
 **As a** tech lead
 **I want** enforced conventional commits
 **So that** we can auto-generate changelogs
 
 ### Acceptance Criteria
+
 - [ ] Commitlint installed
 - [ ] Conventional commits enforced
 - [ ] Commit-msg hook validates format
@@ -941,26 +1009,26 @@ module.exports = {
       2,
       'always',
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation only
-        'style',    // Formatting, no code change
+        'feat', // New feature
+        'fix', // Bug fix
+        'docs', // Documentation only
+        'style', // Formatting, no code change
         'refactor', // Code change, no feature/fix
-        'perf',     // Performance improvement
-        'test',     // Adding tests
-        'build',    // Build system changes
-        'ci',       // CI changes
-        'chore',    // Other changes
-        'revert'    // Revert previous commit
-      ]
+        'perf', // Performance improvement
+        'test', // Adding tests
+        'build', // Build system changes
+        'ci', // CI changes
+        'chore', // Other changes
+        'revert', // Revert previous commit
+      ],
     ],
     'type-case': [2, 'always', 'lower-case'],
     'type-empty': [2, 'never'],
     'scope-case': [2, 'always', 'lower-case'],
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
-    'header-max-length': [2, 'always', 100]
-  }
+    'header-max-length': [2, 'always', 100],
+  },
 };
 ```
 
@@ -1014,8 +1082,10 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/).
 
 ### Format
 ```
+
 <type>(<scope>): <subject>
-```
+
+````
 
 ### Types
 - **feat**: New feature
@@ -1034,13 +1104,15 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/).
 feat(auth): add Google sign-in
 fix(api): handle network timeout
 docs(readme): update installation steps
-```
+````
 
 ### Why?
+
 - Auto-generate CHANGELOG
 - Easy to understand history
 - Trigger semantic versioning
-```
+
+````
 
 ### Testing Plan
 
@@ -1054,9 +1126,10 @@ git commit -m "Add feature"  # No type
 git commit -m "FEAT: feature"  # Wrong case
 git commit -m "feat:"  # Empty subject
 git commit -m "random: message"  # Invalid type
-```
+````
 
 ### Definition of Done
+
 - ✅ Commitlint installed
 - ✅ `.commitlintrc.js` created
 - ✅ Commit-msg hook created
@@ -1084,6 +1157,7 @@ git commit -m "random: message"  # Invalid type
    - Professional codebase
 
 ### Related Issues
+
 - Depends on: #9 (Husky)
 - Related to: #20 (CHANGELOG.md)
 - Related to: #27 (Release Notes)
@@ -1097,6 +1171,7 @@ git commit -m "random: message"  # Invalid type
 # Quick Reference: All Issues
 
 ## Epic 1: CI/CD Infrastructure (6 issues)
+
 1. ✅ GitHub Actions - Continuous Integration
 2. ✅ EAS Build Automation
 3. ✅ Pull Request Validation
@@ -1105,6 +1180,7 @@ git commit -m "random: message"  # Invalid type
 6. ✅ CODEOWNERS Setup
 
 ## Epic 2: Code Quality & Standards (8 issues)
+
 7. ✅ ESLint Configuration
 8. ✅ Prettier Configuration
 9. ✅ Husky Pre-commit Hooks
@@ -1115,6 +1191,7 @@ git commit -m "random: message"  # Invalid type
 14. Code Quality Documentation
 
 ## Epic 3: Testing Infrastructure (7 issues)
+
 15. Jest Setup & Configuration
 16. React Testing Library Setup
 17. Component Unit Tests
@@ -1124,6 +1201,7 @@ git commit -m "random: message"  # Invalid type
 21. Testing Documentation
 
 ## Epic 4: Documentation & Onboarding (8 issues)
+
 22. CONTRIBUTING.md
 23. CHANGELOG.md
 24. LICENSE
@@ -1134,6 +1212,7 @@ git commit -m "random: message"  # Invalid type
 29. README Enhancement
 
 ## Epic 5: Environment & Security (5 issues)
+
 30. Environment Separation
 31. Environment Variable Validation
 32. Secret Scanning
@@ -1141,6 +1220,7 @@ git commit -m "random: message"  # Invalid type
 34. Security Documentation
 
 ## Epic 6: Build & Release Automation (5 issues)
+
 35. Version Management Automation
 36. Release Notes Generation
 37. EAS Build Profiles Enhancement
@@ -1148,12 +1228,14 @@ git commit -m "random: message"  # Invalid type
 39. Release Process Documentation
 
 ## Epic 7: Monitoring & Analytics (4 issues)
+
 40. Error Tracking with Sentry
 41. Analytics Integration
 42. Performance Monitoring
 43. Monitoring Documentation
 
 ## Epic 8: Developer Experience (6 issues)
+
 44. VSCode Workspace Settings
 45. VSCode Recommended Extensions
 46. VSCode Debug Configuration
@@ -1166,12 +1248,14 @@ git commit -m "random: message"  # Invalid type
 ## Labels to Create in GitHub
 
 ### Priority
+
 - `critical` - Must have, blocks progress
 - `high` - Important, should do soon
 - `medium` - Nice to have
 - `low` - Can wait
 
 ### Category
+
 - `ci/cd` - CI/CD related
 - `code-quality` - Code quality tools
 - `testing` - Testing infrastructure
@@ -1182,9 +1266,11 @@ git commit -m "random: message"  # Invalid type
 - `developer-experience` - DX improvements
 
 ### Epic
+
 - `epic-1` through `epic-8`
 
 ### Status
+
 - `needs-triage` - Needs review
 - `ready` - Ready to work on
 - `in-progress` - Currently being worked on
@@ -1196,6 +1282,7 @@ git commit -m "random: message"  # Invalid type
 ## Project Board Setup
 
 ### Columns
+
 1. **Backlog** - All issues
 2. **Ready** - Ready to start
 3. **In Progress** - Currently working
@@ -1203,6 +1290,7 @@ git commit -m "random: message"  # Invalid type
 5. **Done** - Completed
 
 ### Automation Rules
+
 - New issues → Backlog
 - PR opened → Review
 - PR merged → Done
@@ -1211,6 +1299,7 @@ git commit -m "random: message"  # Invalid type
 ---
 
 **Next Steps:**
+
 1. Create labels in GitHub
 2. Copy issues into GitHub
 3. Create project board

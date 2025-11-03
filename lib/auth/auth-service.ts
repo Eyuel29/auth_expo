@@ -6,18 +6,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { type AxiosInstance } from 'axios';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_SERVER_URL || 'http://localhost:8080';
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_SERVER_URL || 'http://localhost:8080';
 const API_PREFIX = '/';
 const TOKEN_KEY = '@auth_token';
 const USER_KEY = '@auth_user';
 
 export interface User {
   id: number;
-  email?: string;  // Optional for WeChat users
+  email?: string; // Optional for WeChat users
   username: string;
   avatar_url?: string;
   oauth_provider?: 'google' | 'wechat' | 'email';
-  openid?: string;  // For WeChat users
+  openid?: string; // For WeChat users
 }
 
 export interface AuthResponse {
@@ -103,7 +104,10 @@ class AuthService {
    */
   async register(payload: RegisterPayload): Promise<AuthResponse> {
     try {
-      const response = await this.api.post<AuthResponse>('/auth/register', payload);
+      const response = await this.api.post<AuthResponse>(
+        '/auth/register',
+        payload
+      );
       const { token, user } = response.data;
 
       await this.saveAuth(token, user);
@@ -127,8 +131,10 @@ class AuthService {
     try {
       // TODO: Backend needs to implement POST /auth/login endpoint
       // For now, we'll throw an error
-      throw new Error('Login endpoint not implemented on backend yet. Please use register.');
-      
+      throw new Error(
+        'Login endpoint not implemented on backend yet. Please use register.'
+      );
+
       // When backend is ready, uncomment this:
       // const response = await this.api.post<AuthResponse>('/auth/login', payload);
       // const { token, user } = response.data;
@@ -249,4 +255,3 @@ class AuthService {
 // Export singleton instance
 export const authService = new AuthService();
 export default authService;
-

@@ -16,7 +16,7 @@ import { useAuth } from '@/contexts/auth-context';
 export default function SignInScreen() {
   const router = useRouter();
   const { login, isLoading, error, clearError } = useAuth();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validationErrors, setValidationErrors] = useState<{
@@ -47,17 +47,17 @@ export default function SignInScreen() {
 
   const handleSignIn = async () => {
     clearError();
-    
+
     if (!validateForm()) {
       return;
     }
 
     try {
       await login({ email: email.trim().toLowerCase(), password });
-      
+
       // Navigate to home after successful login
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch (_err) {
       // Error is handled by context
       Alert.alert('Login Failed', error || 'An error occurred during login');
     }
@@ -99,7 +99,10 @@ export default function SignInScreen() {
                 onChangeText={(text) => {
                   setEmail(text);
                   if (validationErrors.email) {
-                    setValidationErrors({ ...validationErrors, email: undefined });
+                    setValidationErrors({
+                      ...validationErrors,
+                      email: undefined,
+                    });
                   }
                 }}
                 keyboardType="email-address"
@@ -121,14 +124,19 @@ export default function SignInScreen() {
               </Text>
               <TextInput
                 className={`px-4 py-3 border rounded-lg text-base ${
-                  validationErrors.password ? 'border-red-500' : 'border-gray-300'
+                  validationErrors.password
+                    ? 'border-red-500'
+                    : 'border-gray-300'
                 }`}
                 placeholder="Enter your password"
                 value={password}
                 onChangeText={(text) => {
                   setPassword(text);
                   if (validationErrors.password) {
-                    setValidationErrors({ ...validationErrors, password: undefined });
+                    setValidationErrors({
+                      ...validationErrors,
+                      password: undefined,
+                    });
                   }
                 }}
                 secureTextEntry
@@ -182,4 +190,3 @@ export default function SignInScreen() {
     </KeyboardAvoidingView>
   );
 }
-

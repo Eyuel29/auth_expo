@@ -22,22 +22,23 @@
 
 ## Epics Overview
 
-| Epic | Priority | Stories | Estimated Time | Status |
-|------|----------|---------|----------------|--------|
-| Epic 1: CI/CD Infrastructure | 🔴 Critical | 6 | 3-5 days | Not Started |
-| Epic 2: Code Quality & Standards | 🔴 Critical | 8 | 2-3 days | Not Started |
-| Epic 3: Testing Infrastructure | 🟠 High | 7 | 5-7 days | Not Started |
-| Epic 4: Documentation & Onboarding | 🟠 High | 8 | 3-4 days | Not Started |
-| Epic 5: Environment & Security | 🟠 High | 5 | 2-3 days | Not Started |
-| Epic 6: Build & Release Automation | 🟡 Medium | 5 | 3-4 days | Not Started |
-| Epic 7: Monitoring & Analytics | 🟢 Low | 4 | 2-3 days | Not Started |
-| Epic 8: Developer Experience | 🟡 Medium | 6 | 2-3 days | Not Started |
+| Epic                               | Priority    | Stories | Estimated Time | Status      |
+| ---------------------------------- | ----------- | ------- | -------------- | ----------- |
+| Epic 1: CI/CD Infrastructure       | 🔴 Critical | 6       | 3-5 days       | Not Started |
+| Epic 2: Code Quality & Standards   | 🔴 Critical | 8       | 2-3 days       | Not Started |
+| Epic 3: Testing Infrastructure     | 🟠 High     | 7       | 5-7 days       | Not Started |
+| Epic 4: Documentation & Onboarding | 🟠 High     | 8       | 3-4 days       | Not Started |
+| Epic 5: Environment & Security     | 🟠 High     | 5       | 2-3 days       | Not Started |
+| Epic 6: Build & Release Automation | 🟡 Medium   | 5       | 3-4 days       | Not Started |
+| Epic 7: Monitoring & Analytics     | 🟢 Low      | 4       | 2-3 days       | Not Started |
+| Epic 8: Developer Experience       | 🟡 Medium   | 6       | 2-3 days       | Not Started |
 
 **Total**: 8 Epics, 49 Stories, ~4 weeks
 
 ---
 
 # Epic 1: CI/CD Infrastructure
+
 **Priority**: 🔴 Critical
 **Goal**: Implement automated CI/CD pipelines for quality assurance and deployment
 
@@ -50,6 +51,7 @@
 **So that** code quality issues are caught early
 
 ### Acceptance Criteria
+
 - [ ] CI runs on push to any branch
 - [ ] CI runs on pull requests
 - [ ] Pipeline checks: install, type-check, lint, test
@@ -58,6 +60,7 @@
 - [ ] Clear error messages for failures
 
 ### Technical Details
+
 ```yaml
 # .github/workflows/ci.yml
 name: CI
@@ -71,6 +74,7 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ `.github/workflows/ci.yml` created
 - ✅ CI badge added to README
 - ✅ All checks passing on main branch
@@ -89,6 +93,7 @@ jobs:
 **So that** I always have a preview version to test
 
 ### Acceptance Criteria
+
 - [ ] Development build on push to `develop` branch
 - [ ] Preview build on pull requests
 - [ ] Production build on push to `main`
@@ -97,6 +102,7 @@ jobs:
 - [ ] Failed builds notify team
 
 ### Technical Details
+
 ```yaml
 # .github/workflows/build.yml
 - Trigger EAS build for appropriate profile
@@ -106,6 +112,7 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ `.github/workflows/build.yml` created
 - ✅ EAS credentials configured
 - ✅ Builds triggered automatically
@@ -124,6 +131,7 @@ jobs:
 **So that** I can focus on logic rather than syntax
 
 ### Acceptance Criteria
+
 - [ ] PR template auto-loads with checklist
 - [ ] Type checking passes
 - [ ] Linting passes
@@ -133,6 +141,7 @@ jobs:
 - [ ] Cannot merge if checks fail
 
 ### Technical Details
+
 ```yaml
 # .github/workflows/pr-check.yml
 - Validate PR title (conventional commits)
@@ -143,6 +152,7 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ `.github/workflows/pr-check.yml` created
 - ✅ `.github/pull_request_template.md` created
 - ✅ All checks running on test PR
@@ -161,6 +171,7 @@ jobs:
 **So that** unstable code never reaches production
 
 ### Acceptance Criteria
+
 - [ ] `main` branch protected
 - [ ] Require CI to pass before merge
 - [ ] Require 1+ approvals for PRs
@@ -169,12 +180,14 @@ jobs:
 - [ ] Prevent deletion of main
 
 ### Technical Details
+
 - Configure via GitHub Settings > Branches
 - Required status checks: CI, Build, Tests
 - Required reviews: 1 (configurable)
 - Dismiss stale reviews on new commits
 
 ### Definition of Done
+
 - ✅ Branch protection rules configured
 - ✅ Rules tested with test PR
 - ✅ Team trained on new workflow
@@ -193,6 +206,7 @@ jobs:
 **So that** all necessary information is captured
 
 ### Acceptance Criteria
+
 - [ ] Bug report template with reproduction steps
 - [ ] Feature request template with use case
 - [ ] PR template with checklist
@@ -200,6 +214,7 @@ jobs:
 - [ ] Templates include labels and assignees
 
 ### Technical Details
+
 ```
 .github/
 ├── ISSUE_TEMPLATE/
@@ -210,6 +225,7 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ All templates created
 - ✅ Templates tested
 - ✅ Team trained
@@ -228,6 +244,7 @@ jobs:
 **So that** PRs go to the right people
 
 ### Acceptance Criteria
+
 - [ ] CODEOWNERS file created
 - [ ] Teams/individuals assigned to paths
 - [ ] Auto-assigns reviewers on PR creation
@@ -235,6 +252,7 @@ jobs:
 - [ ] Documentation on ownership structure
 
 ### Technical Details
+
 ```
 # .github/CODEOWNERS
 /app/        @frontend-team
@@ -244,6 +262,7 @@ jobs:
 ```
 
 ### Definition of Done
+
 - ✅ `.github/CODEOWNERS` created
 - ✅ Tested with test PR
 - ✅ Auto-assignment working
@@ -256,6 +275,7 @@ jobs:
 ---
 
 # Epic 2: Code Quality & Standards
+
 **Priority**: 🔴 Critical
 **Goal**: Establish consistent code quality and formatting standards
 
@@ -268,6 +288,7 @@ jobs:
 **So that** I write consistent, error-free code
 
 ### Acceptance Criteria
+
 - [ ] ESLint installed and configured
 - [ ] Expo/React Native rules applied
 - [ ] TypeScript support enabled
@@ -276,21 +297,19 @@ jobs:
 - [ ] Lint runs in CI pipeline
 
 ### Technical Details
+
 ```javascript
 // .eslintrc.js
 module.exports = {
-  extends: [
-    'expo',
-    'prettier',
-    'plugin:@typescript-eslint/recommended'
-  ],
+  extends: ['expo', 'prettier', 'plugin:@typescript-eslint/recommended'],
   rules: {
     // Custom rules
-  }
+  },
 };
 ```
 
 ### Definition of Done
+
 - ✅ `.eslintrc.js` created
 - ✅ All existing code linted
 - ✅ VSCode ESLint extension working
@@ -310,6 +329,7 @@ module.exports = {
 **So that** I never waste time on formatting debates
 
 ### Acceptance Criteria
+
 - [ ] Prettier installed and configured
 - [ ] Format on save enabled
 - [ ] Consistent with ESLint rules
@@ -318,6 +338,7 @@ module.exports = {
 - [ ] Format check in CI
 
 ### Technical Details
+
 ```json
 // .prettierrc
 {
@@ -329,6 +350,7 @@ module.exports = {
 ```
 
 ### Definition of Done
+
 - ✅ `.prettierrc` created
 - ✅ `.prettierignore` created
 - ✅ Entire codebase formatted
@@ -348,6 +370,7 @@ module.exports = {
 **So that** I never commit broken code
 
 ### Acceptance Criteria
+
 - [ ] Husky installed
 - [ ] Pre-commit hook runs lint-staged
 - [ ] Only staged files are checked
@@ -356,6 +379,7 @@ module.exports = {
 - [ ] Fast execution (< 10 seconds)
 
 ### Technical Details
+
 ```json
 // package.json
 {
@@ -372,6 +396,7 @@ module.exports = {
 ```
 
 ### Definition of Done
+
 - ✅ Husky installed
 - ✅ Pre-commit hook working
 - ✅ Tested with test commit
@@ -390,6 +415,7 @@ module.exports = {
 **So that** we can auto-generate changelogs
 
 ### Acceptance Criteria
+
 - [ ] Commitlint installed
 - [ ] Conventional commits enforced
 - [ ] Commit-msg hook validates format
@@ -398,20 +424,23 @@ module.exports = {
 - [ ] Works with CI
 
 ### Technical Details
+
 ```javascript
 // .commitlintrc.js
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'type-enum': [2, 'always', [
-      'feat', 'fix', 'docs', 'style',
-      'refactor', 'test', 'chore'
-    ]]
-  }
+    'type-enum': [
+      2,
+      'always',
+      ['feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore'],
+    ],
+  },
 };
 ```
 
 **Commit Format**:
+
 ```
 feat(auth): add biometric login
 fix(payment): resolve stripe webhook issue
@@ -419,6 +448,7 @@ docs(readme): update setup instructions
 ```
 
 ### Definition of Done
+
 - ✅ Commitlint installed
 - ✅ `.commitlintrc.js` created
 - ✅ Commit-msg hook working
@@ -438,6 +468,7 @@ docs(readme): update setup instructions
 **So that** formatting is consistent across IDEs
 
 ### Acceptance Criteria
+
 - [ ] `.editorconfig` file created
 - [ ] Covers all file types
 - [ ] Consistent with Prettier
@@ -445,6 +476,7 @@ docs(readme): update setup instructions
 - [ ] Documentation provided
 
 ### Technical Details
+
 ```ini
 # .editorconfig
 root = true
@@ -462,6 +494,7 @@ trim_trailing_whitespace = false
 ```
 
 ### Definition of Done
+
 - ✅ `.editorconfig` created
 - ✅ Tested in multiple editors
 - ✅ Documentation updated
@@ -479,6 +512,7 @@ trim_trailing_whitespace = false
 **So that** I catch type errors early
 
 ### Acceptance Criteria
+
 - [ ] Strict mode enabled in tsconfig.json (✅ Already done)
 - [ ] No `any` types allowed
 - [ ] Unused variables/imports detected
@@ -486,6 +520,7 @@ trim_trailing_whitespace = false
 - [ ] Quick feedback in IDE
 
 ### Technical Details
+
 ```json
 // tsconfig.json (already has this)
 {
@@ -499,6 +534,7 @@ trim_trailing_whitespace = false
 ```
 
 ### Definition of Done
+
 - ✅ Strict mode validated
 - ✅ All existing code passes
 - ✅ CI runs type check
@@ -517,6 +553,7 @@ trim_trailing_whitespace = false
 **So that** code is more readable
 
 ### Acceptance Criteria
+
 - [ ] Import sorting plugin installed
 - [ ] Groups: React, libraries, @/, ./
 - [ ] Unused imports removed automatically
@@ -524,6 +561,7 @@ trim_trailing_whitespace = false
 - [ ] Consistent across codebase
 
 ### Technical Details
+
 ```javascript
 // ESLint plugin: eslint-plugin-import
 rules: {
@@ -541,6 +579,7 @@ rules: {
 ```
 
 ### Definition of Done
+
 - ✅ Plugin installed
 - ✅ Rules configured
 - ✅ All imports organized
@@ -559,6 +598,7 @@ rules: {
 **So that** I know project standards
 
 ### Acceptance Criteria
+
 - [ ] Code style guide documented
 - [ ] Examples of good/bad code
 - [ ] How to run quality checks
@@ -566,9 +606,11 @@ rules: {
 - [ ] Troubleshooting section
 
 ### Technical Details
+
 Create: `docs/CODE_QUALITY.md`
 
 Sections:
+
 - Code style overview
 - Linting rules
 - Formatting standards
@@ -576,6 +618,7 @@ Sections:
 - Common issues & fixes
 
 ### Definition of Done
+
 - ✅ `docs/CODE_QUALITY.md` created
 - ✅ Examples provided
 - ✅ Linked from README
@@ -588,6 +631,7 @@ Sections:
 ---
 
 # Epic 3: Testing Infrastructure
+
 **Priority**: 🟠 High
 **Goal**: Implement comprehensive testing strategy
 
@@ -600,6 +644,7 @@ Sections:
 **So that** I can write and run unit tests
 
 ### Acceptance Criteria
+
 - [ ] Jest installed with Expo preset
 - [ ] TypeScript support enabled
 - [ ] Test utilities configured
@@ -608,24 +653,26 @@ Sections:
 - [ ] Fast test execution
 
 ### Technical Details
+
 ```javascript
 // jest.config.js
 module.exports = {
   preset: 'jest-expo',
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)'
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)',
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   collectCoverageFrom: [
     '**/*.{ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
-    '!**/.expo/**'
-  ]
+    '!**/.expo/**',
+  ],
 };
 ```
 
 ### Definition of Done
+
 - ✅ `jest.config.js` created
 - ✅ `jest.setup.js` created
 - ✅ npm script `test` working
@@ -645,6 +692,7 @@ module.exports = {
 **So that** I can test UI components
 
 ### Acceptance Criteria
+
 - [ ] @testing-library/react-native installed
 - [ ] @testing-library/jest-native matchers added
 - [ ] Helper functions created
@@ -652,6 +700,7 @@ module.exports = {
 - [ ] Example component test
 
 ### Technical Details
+
 ```typescript
 // __tests__/utils/test-utils.tsx
 export function renderWithProviders(ui: React.ReactElement) {
@@ -666,6 +715,7 @@ export function renderWithProviders(ui: React.ReactElement) {
 ```
 
 ### Definition of Done
+
 - ✅ Libraries installed
 - ✅ Test utilities created
 - ✅ Mock providers working
@@ -685,6 +735,7 @@ export function renderWithProviders(ui: React.ReactElement) {
 **So that** I know they render correctly
 
 ### Acceptance Criteria
+
 - [ ] Test auth components (SignIn, SignUp)
 - [ ] Test form validation
 - [ ] Test button states
@@ -693,7 +744,9 @@ export function renderWithProviders(ui: React.ReactElement) {
 - [ ] 70%+ component coverage
 
 ### Technical Details
+
 Test files to create:
+
 ```
 __tests__/
 ├── components/
@@ -704,6 +757,7 @@ __tests__/
 ```
 
 ### Definition of Done
+
 - ✅ All component tests written
 - ✅ All tests passing
 - ✅ Coverage > 70%
@@ -722,6 +776,7 @@ __tests__/
 **So that** business logic is verified
 
 ### Acceptance Criteria
+
 - [ ] Test auth hooks
 - [ ] Test API call hooks
 - [ ] Test state management
@@ -730,6 +785,7 @@ __tests__/
 - [ ] 80%+ hook coverage
 
 ### Technical Details
+
 ```typescript
 // __tests__/hooks/use-login.test.ts
 import { renderHook, waitFor } from '@testing-library/react-native';
@@ -745,6 +801,7 @@ test('useLogin handles success', async () => {
 ```
 
 ### Definition of Done
+
 - ✅ All hook tests written
 - ✅ All tests passing
 - ✅ Coverage > 80%
@@ -763,6 +820,7 @@ test('useLogin handles success', async () => {
 **So that** backend integration is verified
 
 ### Acceptance Criteria
+
 - [ ] Test API client wrapper
 - [ ] Test auth service
 - [ ] Test error handling
@@ -771,6 +829,7 @@ test('useLogin handles success', async () => {
 - [ ] Test timeout handling
 
 ### Technical Details
+
 ```typescript
 // __tests__/services/auth-client.test.ts
 import { ApiClient } from '@/api/client';
@@ -783,7 +842,7 @@ afterAll(() => mockServer.close());
 test('login success', async () => {
   const response = await ApiClient.auth.login({
     email: 'test@example.com',
-    password: 'password'
+    password: 'password',
   });
 
   expect(response.data).toBeDefined();
@@ -791,6 +850,7 @@ test('login success', async () => {
 ```
 
 ### Definition of Done
+
 - ✅ API tests written
 - ✅ Mock server setup
 - ✅ All tests passing
@@ -809,6 +869,7 @@ test('login success', async () => {
 **So that** I can track testing progress
 
 ### Acceptance Criteria
+
 - [ ] Coverage report generated
 - [ ] Coverage thresholds enforced
 - [ ] Coverage posted to PRs
@@ -817,6 +878,7 @@ test('login success', async () => {
 - [ ] Minimum 70% coverage
 
 ### Technical Details
+
 ```javascript
 // jest.config.js
 module.exports = {
@@ -825,13 +887,14 @@ module.exports = {
       branches: 70,
       functions: 70,
       lines: 70,
-      statements: 70
-    }
-  }
+      statements: 70,
+    },
+  },
 };
 ```
 
 ### Definition of Done
+
 - ✅ Coverage reporting configured
 - ✅ Thresholds set
 - ✅ Coverage in CI
@@ -850,6 +913,7 @@ module.exports = {
 **So that** I can write good tests
 
 ### Acceptance Criteria
+
 - [ ] Testing guide created
 - [ ] Examples for each test type
 - [ ] Best practices documented
@@ -858,9 +922,11 @@ module.exports = {
 - [ ] Troubleshooting section
 
 ### Technical Details
+
 Create: `docs/TESTING.md`
 
 Sections:
+
 - Testing philosophy
 - Running tests
 - Writing unit tests
@@ -869,6 +935,7 @@ Sections:
 - Common issues
 
 ### Definition of Done
+
 - ✅ `docs/TESTING.md` created
 - ✅ Examples provided
 - ✅ Linked from README
@@ -881,6 +948,7 @@ Sections:
 ---
 
 # Epic 4: Documentation & Onboarding
+
 **Priority**: 🟠 High
 **Goal**: Complete documentation for all aspects of the project
 
@@ -893,6 +961,7 @@ Sections:
 **So that** I can contribute effectively
 
 ### Acceptance Criteria
+
 - [ ] How to set up development environment
 - [ ] How to create a branch
 - [ ] How to submit a PR
@@ -901,7 +970,9 @@ Sections:
 - [ ] Style guidelines link
 
 ### Technical Details
+
 Sections:
+
 1. Getting Started
 2. Development Workflow
 3. Pull Request Process
@@ -910,6 +981,7 @@ Sections:
 6. Documentation Standards
 
 ### Definition of Done
+
 - ✅ `CONTRIBUTING.md` created
 - ✅ All sections complete
 - ✅ Examples provided
@@ -928,6 +1000,7 @@ Sections:
 **So that** I can track changes
 
 ### Acceptance Criteria
+
 - [ ] Follows Keep a Changelog format
 - [ ] Includes all releases
 - [ ] Grouped by type (Added, Changed, Fixed)
@@ -935,19 +1008,23 @@ Sections:
 - [ ] Auto-update mechanism planned
 
 ### Technical Details
+
 ```markdown
 # Changelog
 
 ## [Unreleased]
 
 ## [1.0.0] - 2025-11-03
+
 ### Added
+
 - Backend-driven development foundation
 - OpenAPI type generation
 - Better-Auth integration
 ```
 
 ### Definition of Done
+
 - ✅ `CHANGELOG.md` created
 - ✅ Current state documented
 - ✅ Format established
@@ -966,6 +1043,7 @@ Sections:
 **So that** usage terms are explicit
 
 ### Acceptance Criteria
+
 - [ ] License type selected (MIT, Apache, etc.)
 - [ ] LICENSE file created
 - [ ] Copyright year and owner correct
@@ -973,13 +1051,16 @@ Sections:
 - [ ] Referenced in README
 
 ### Technical Details
+
 Choose license based on project needs:
+
 - MIT: Permissive, simple
 - Apache 2.0: Patent protection
 - GPL: Copyleft
 - Proprietary: Private project
 
 ### Definition of Done
+
 - ✅ `LICENSE` file created
 - ✅ License type in package.json
 - ✅ README badge added
@@ -998,6 +1079,7 @@ Choose license based on project needs:
 **So that** we maintain a healthy community
 
 ### Acceptance Criteria
+
 - [ ] Contributor Covenant format
 - [ ] Contact information included
 - [ ] Enforcement guidelines
@@ -1005,10 +1087,12 @@ Choose license based on project needs:
 - [ ] Referenced in CONTRIBUTING
 
 ### Technical Details
+
 Use standard Contributor Covenant template:
 https://www.contributor-covenant.org/
 
 ### Definition of Done
+
 - ✅ `CODE_OF_CONDUCT.md` created
 - ✅ Contact info added
 - ✅ Linked from README
@@ -1027,6 +1111,7 @@ https://www.contributor-covenant.org/
 **So that** I understand the big picture
 
 ### Acceptance Criteria
+
 - [ ] High-level architecture diagram
 - [ ] Technology stack overview
 - [ ] Data flow diagrams
@@ -1035,9 +1120,11 @@ https://www.contributor-covenant.org/
 - [ ] Folder structure explained
 
 ### Technical Details
+
 Create: `docs/ARCHITECTURE.md`
 
 Include:
+
 - System architecture diagram
 - Component relationships
 - API integration flow
@@ -1045,6 +1132,7 @@ Include:
 - Navigation structure
 
 ### Definition of Done
+
 - ✅ `docs/ARCHITECTURE.md` created
 - ✅ Diagrams included
 - ✅ All major components covered
@@ -1063,6 +1151,7 @@ Include:
 **So that** I can deploy confidently
 
 ### Acceptance Criteria
+
 - [ ] Environment setup instructions
 - [ ] EAS build process documented
 - [ ] Store submission process
@@ -1071,9 +1160,11 @@ Include:
 - [ ] Production checklist
 
 ### Technical Details
+
 Create: `docs/DEPLOYMENT.md`
 
 Sections:
+
 1. Environment Setup
 2. Building for Production
 3. App Store Submission (iOS)
@@ -1083,6 +1174,7 @@ Sections:
 7. Troubleshooting
 
 ### Definition of Done
+
 - ✅ `docs/DEPLOYMENT.md` created
 - ✅ All procedures documented
 - ✅ Examples provided
@@ -1101,6 +1193,7 @@ Sections:
 **So that** I can integrate features quickly
 
 ### Acceptance Criteria
+
 - [ ] Existing guide reviewed
 - [ ] Missing sections added
 - [ ] More examples added
@@ -1109,9 +1202,11 @@ Sections:
 - [ ] Troubleshooting expanded
 
 ### Technical Details
+
 Enhance: `docs/BACKEND_INTEGRATION_GUIDE.md`
 
 Add:
+
 - Common API patterns
 - Error handling examples
 - Type safety best practices
@@ -1119,6 +1214,7 @@ Add:
 - Performance tips
 
 ### Definition of Done
+
 - ✅ Guide enhanced
 - ✅ More examples added
 - ✅ Team reviewed
@@ -1137,6 +1233,7 @@ Add:
 **So that** I understand the project quickly
 
 ### Acceptance Criteria
+
 - [ ] Badges for CI, coverage, license
 - [ ] Quick start section clear
 - [ ] All major features listed
@@ -1145,7 +1242,9 @@ Add:
 - [ ] Contribution info clear
 
 ### Technical Details
+
 Add to existing README:
+
 - Status badges (CI, coverage)
 - Demo screenshots
 - Feature highlights
@@ -1153,6 +1252,7 @@ Add to existing README:
 - Quick links section
 
 ### Definition of Done
+
 - ✅ README enhanced
 - ✅ All badges working
 - ✅ Links verified
@@ -1165,6 +1265,7 @@ Add to existing README:
 ---
 
 # Epic 5: Environment & Security
+
 **Priority**: 🟠 High
 **Goal**: Secure environment management and secret handling
 
@@ -1177,6 +1278,7 @@ Add to existing README:
 **So that** I never mix dev/staging/prod configs
 
 ### Acceptance Criteria
+
 - [ ] `.env.local.example` for local dev
 - [ ] `.env.staging.example` for staging
 - [ ] `.env.production.example` for production
@@ -1185,6 +1287,7 @@ Add to existing README:
 - [ ] Scripts to validate env vars
 
 ### Technical Details
+
 ```bash
 # .env.local.example
 EXPO_PUBLIC_SERVER_URL=http://localhost:8080
@@ -1204,6 +1307,7 @@ EXPO_PUBLIC_STRIPE_KEY=pk_live_...
 ```
 
 ### Definition of Done
+
 - ✅ All env files created
 - ✅ Documentation added
 - ✅ Validation script created
@@ -1222,6 +1326,7 @@ EXPO_PUBLIC_STRIPE_KEY=pk_live_...
 **So that** I catch config errors early
 
 ### Acceptance Criteria
+
 - [ ] Validation script checks required vars
 - [ ] Type validation for values
 - [ ] Clear error messages
@@ -1230,14 +1335,12 @@ EXPO_PUBLIC_STRIPE_KEY=pk_live_...
 - [ ] Documentation included
 
 ### Technical Details
+
 ```typescript
 // scripts/validate-env.ts
-const required = [
-  'EXPO_PUBLIC_SERVER_URL',
-  'EXPO_PUBLIC_STRIPE_KEY'
-];
+const required = ['EXPO_PUBLIC_SERVER_URL', 'EXPO_PUBLIC_STRIPE_KEY'];
 
-required.forEach(key => {
+required.forEach((key) => {
   if (!process.env[key]) {
     throw new Error(`Missing env var: ${key}`);
   }
@@ -1245,6 +1348,7 @@ required.forEach(key => {
 ```
 
 ### Definition of Done
+
 - ✅ Validation script created
 - ✅ Runs on app start
 - ✅ Runs in CI
@@ -1263,6 +1367,7 @@ required.forEach(key => {
 **So that** secrets never reach the repo
 
 ### Acceptance Criteria
+
 - [ ] GitHub secret scanning enabled
 - [ ] Pre-commit hook checks for secrets
 - [ ] Common patterns detected (API keys, tokens)
@@ -1271,6 +1376,7 @@ required.forEach(key => {
 - [ ] Team trained
 
 ### Technical Details
+
 ```yaml
 # .github/workflows/security.yml
 - name: Secret Scanning
@@ -1282,6 +1388,7 @@ required.forEach(key => {
 ```
 
 ### Definition of Done
+
 - ✅ Secret scanning in CI
 - ✅ Pre-commit checks added
 - ✅ Tested with test secret
@@ -1300,6 +1407,7 @@ required.forEach(key => {
 **So that** we know about security issues
 
 ### Acceptance Criteria
+
 - [ ] Dependabot enabled
 - [ ] Weekly security updates
 - [ ] Critical vulnerabilities auto-fixed
@@ -1308,18 +1416,20 @@ required.forEach(key => {
 - [ ] Documentation on handling alerts
 
 ### Technical Details
+
 ```yaml
 # .github/dependabot.yml
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: "/"
+    directory: '/'
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
 ```
 
 ### Definition of Done
+
 - ✅ Dependabot configured
 - ✅ npm audit in CI
 - ✅ Team receives alerts
@@ -1338,6 +1448,7 @@ updates:
 **So that** I build secure features
 
 ### Acceptance Criteria
+
 - [ ] Security guidelines documented
 - [ ] Common vulnerabilities explained
 - [ ] How to handle secrets
@@ -1346,9 +1457,11 @@ updates:
 - [ ] Incident response process
 
 ### Technical Details
+
 Create: `docs/SECURITY.md`
 
 Sections:
+
 1. Security Overview
 2. Environment Variables
 3. Secret Management
@@ -1359,6 +1472,7 @@ Sections:
 8. Incident Response
 
 ### Definition of Done
+
 - ✅ `docs/SECURITY.md` created
 - ✅ All sections complete
 - ✅ Examples provided
@@ -1371,6 +1485,7 @@ Sections:
 ---
 
 # Epic 6: Build & Release Automation
+
 **Priority**: 🟡 Medium
 **Goal**: Automate version management and releases
 
@@ -1383,6 +1498,7 @@ Sections:
 **So that** versions are always correct
 
 ### Acceptance Criteria
+
 - [ ] npm version scripts
 - [ ] Auto-update app.json version
 - [ ] Auto-update eas.json build number
@@ -1391,6 +1507,7 @@ Sections:
 - [ ] Commit with version bump
 
 ### Technical Details
+
 ```json
 // package.json
 {
@@ -1404,6 +1521,7 @@ Sections:
 ```
 
 ### Definition of Done
+
 - ✅ Scripts created
 - ✅ Tested version bump
 - ✅ Tags created correctly
@@ -1422,6 +1540,7 @@ Sections:
 **So that** I don't manually track changes
 
 ### Acceptance Criteria
+
 - [ ] Generate notes from commits
 - [ ] Group by type (features, fixes)
 - [ ] Include PR links
@@ -1430,6 +1549,7 @@ Sections:
 - [ ] Script to generate notes
 
 ### Technical Details
+
 ```bash
 # scripts/generate-release-notes.sh
 # Use conventional-changelog
@@ -1437,6 +1557,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 ```
 
 ### Definition of Done
+
 - ✅ Script created
 - ✅ Tested with history
 - ✅ Format approved
@@ -1455,6 +1576,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 **So that** builds are fast and correct
 
 ### Acceptance Criteria
+
 - [ ] Development build optimized
 - [ ] Preview build includes debugging
 - [ ] Production build optimized
@@ -1463,6 +1585,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 - [ ] Documentation updated
 
 ### Technical Details
+
 ```json
 // eas.json
 {
@@ -1487,6 +1610,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 ```
 
 ### Definition of Done
+
 - ✅ Profiles updated
 - ✅ Tested all profiles
 - ✅ Build times optimized
@@ -1505,6 +1629,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 **So that** releases are faster
 
 ### Acceptance Criteria
+
 - [ ] EAS Submit configured
 - [ ] iOS TestFlight submission automated
 - [ ] Android internal track automated
@@ -1513,6 +1638,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 - [ ] Notifications on success/failure
 
 ### Technical Details
+
 ```yaml
 # .github/workflows/release.yml
 - name: Submit to App Stores
@@ -1523,6 +1649,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 ```
 
 ### Definition of Done
+
 - ✅ Submission working
 - ✅ Tested with preview
 - ✅ Credentials secure
@@ -1541,6 +1668,7 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 **So that** anyone can do a release
 
 ### Acceptance Criteria
+
 - [ ] Step-by-step release guide
 - [ ] Pre-release checklist
 - [ ] How to rollback
@@ -1549,9 +1677,11 @@ npx conventional-changelog -p angular -i CHANGELOG.md -s
 - [ ] Troubleshooting section
 
 ### Technical Details
+
 Create: `docs/RELEASE_PROCESS.md`
 
 Sections:
+
 1. Release Overview
 2. Pre-release Checklist
 3. Version Bump Process
@@ -1562,6 +1692,7 @@ Sections:
 8. Rollback Procedures
 
 ### Definition of Done
+
 - ✅ `docs/RELEASE_PROCESS.md` created
 - ✅ All steps documented
 - ✅ Tested with release
@@ -1574,6 +1705,7 @@ Sections:
 ---
 
 # Epic 7: Monitoring & Analytics
+
 **Priority**: 🟢 Low
 **Goal**: Production monitoring and user analytics
 
@@ -1586,6 +1718,7 @@ Sections:
 **So that** I know when things break
 
 ### Acceptance Criteria
+
 - [ ] Sentry account created
 - [ ] Sentry SDK installed
 - [ ] Error boundaries configured
@@ -1594,6 +1727,7 @@ Sections:
 - [ ] Team alerts configured
 
 ### Technical Details
+
 ```typescript
 // app/_layout.tsx
 import * as Sentry from '@sentry/react-native';
@@ -1602,11 +1736,12 @@ Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
   environment: process.env.ENV,
   enableInExpoDevelopment: false,
-  debug: false
+  debug: false,
 });
 ```
 
 ### Definition of Done
+
 - ✅ Sentry installed
 - ✅ Errors tracked
 - ✅ Test error sent
@@ -1626,6 +1761,7 @@ Sentry.init({
 **So that** I understand usage patterns
 
 ### Acceptance Criteria
+
 - [ ] Analytics provider chosen
 - [ ] SDK installed
 - [ ] Screen tracking enabled
@@ -1634,7 +1770,9 @@ Sentry.init({
 - [ ] Privacy compliant
 
 ### Technical Details
+
 Options:
+
 - Segment (recommended - multi-platform)
 - Firebase Analytics
 - Amplitude
@@ -1648,11 +1786,12 @@ export const Analytics = {
   },
   screen: (name: string) => {
     // Screen tracking
-  }
+  },
 };
 ```
 
 ### Definition of Done
+
 - ✅ Analytics installed
 - ✅ Key events tracked
 - ✅ Dashboard configured
@@ -1672,6 +1811,7 @@ export const Analytics = {
 **So that** I can optimize the app
 
 ### Acceptance Criteria
+
 - [ ] Performance SDK installed
 - [ ] App startup time tracked
 - [ ] Screen render times tracked
@@ -1680,6 +1820,7 @@ export const Analytics = {
 - [ ] Dashboard configured
 
 ### Technical Details
+
 ```typescript
 // Use @react-native-firebase/perf or similar
 import perf from '@react-native-firebase/perf';
@@ -1690,6 +1831,7 @@ await trace.stop();
 ```
 
 ### Definition of Done
+
 - ✅ Performance tracking added
 - ✅ Key metrics tracked
 - ✅ Alerts configured
@@ -1708,6 +1850,7 @@ await trace.stop();
 **So that** I know what to track
 
 ### Acceptance Criteria
+
 - [ ] What to track documented
 - [ ] How to track events
 - [ ] Custom metrics guide
@@ -1716,9 +1859,11 @@ await trace.stop();
 - [ ] Privacy considerations
 
 ### Technical Details
+
 Create: `docs/MONITORING.md`
 
 Sections:
+
 1. Monitoring Overview
 2. Error Tracking (Sentry)
 3. Analytics Events
@@ -1728,6 +1873,7 @@ Sections:
 7. Troubleshooting
 
 ### Definition of Done
+
 - ✅ `docs/MONITORING.md` created
 - ✅ All tools documented
 - ✅ Examples provided
@@ -1740,6 +1886,7 @@ Sections:
 ---
 
 # Epic 8: Developer Experience
+
 **Priority**: 🟡 Medium
 **Goal**: Optimize developer workflow and tooling
 
@@ -1752,6 +1899,7 @@ Sections:
 **So that** my IDE works perfectly
 
 ### Acceptance Criteria
+
 - [ ] Workspace settings configured
 - [ ] Auto-format on save enabled
 - [ ] ESLint integration working
@@ -1760,6 +1908,7 @@ Sections:
 - [ ] Recommended extensions listed
 
 ### Technical Details
+
 ```json
 // .vscode/settings.json
 {
@@ -1774,6 +1923,7 @@ Sections:
 ```
 
 ### Definition of Done
+
 - ✅ `.vscode/settings.json` created
 - ✅ All features working
 - ✅ Tested by team
@@ -1792,6 +1942,7 @@ Sections:
 **So that** I have all necessary tools
 
 ### Acceptance Criteria
+
 - [ ] Extensions list created
 - [ ] ESLint and Prettier included
 - [ ] React Native tools included
@@ -1800,6 +1951,7 @@ Sections:
 - [ ] Documentation for each extension
 
 ### Technical Details
+
 ```json
 // .vscode/extensions.json
 {
@@ -1815,6 +1967,7 @@ Sections:
 ```
 
 ### Definition of Done
+
 - ✅ `.vscode/extensions.json` created
 - ✅ All extensions tested
 - ✅ Documentation added
@@ -1833,6 +1986,7 @@ Sections:
 **So that** I can debug efficiently
 
 ### Acceptance Criteria
+
 - [ ] Debug configs for iOS/Android
 - [ ] Debug config for Jest tests
 - [ ] Breakpoints working
@@ -1841,6 +1995,7 @@ Sections:
 - [ ] Documentation provided
 
 ### Technical Details
+
 ```json
 // .vscode/launch.json
 {
@@ -1870,6 +2025,7 @@ Sections:
 ```
 
 ### Definition of Done
+
 - ✅ `.vscode/launch.json` created
 - ✅ All configs tested
 - ✅ Breakpoints working
@@ -1888,6 +2044,7 @@ Sections:
 **So that** common tasks are easy
 
 ### Acceptance Criteria
+
 - [ ] Clean script (clear cache)
 - [ ] Reset script (fresh start)
 - [ ] Doctor script (diagnose issues)
@@ -1896,6 +2053,7 @@ Sections:
 - [ ] Help command added
 
 ### Technical Details
+
 ```json
 // package.json
 {
@@ -1909,6 +2067,7 @@ Sections:
 ```
 
 ### Definition of Done
+
 - ✅ Scripts added
 - ✅ All scripts tested
 - ✅ Documentation updated
@@ -1927,6 +2086,7 @@ Sections:
 **So that** I don't miss setup steps
 
 ### Acceptance Criteria
+
 - [ ] Checklist in CONTRIBUTING.md
 - [ ] Prerequisites listed
 - [ ] Installation steps
@@ -1935,7 +2095,9 @@ Sections:
 - [ ] Contacts for help
 
 ### Technical Details
+
 Checklist includes:
+
 - [ ] Install Node.js (v18+)
 - [ ] Install Expo CLI
 - [ ] Install EAS CLI
@@ -1948,6 +2110,7 @@ Checklist includes:
 - [ ] Join team channels
 
 ### Definition of Done
+
 - ✅ Checklist added to docs
 - ✅ Tested with new developer
 - ✅ Feedback incorporated
@@ -1966,6 +2129,7 @@ Checklist includes:
 **So that** I work efficiently
 
 ### Acceptance Criteria
+
 - [ ] IDE setup guide
 - [ ] Debugging tips
 - [ ] Performance tips
@@ -1974,9 +2138,11 @@ Checklist includes:
 - [ ] Tool recommendations
 
 ### Technical Details
+
 Create: `docs/DEVELOPER_EXPERIENCE.md`
 
 Sections:
+
 1. IDE Setup
 2. Debugging Guide
 3. Common Workflows
@@ -1986,6 +2152,7 @@ Sections:
 7. Performance Tips
 
 ### Definition of Done
+
 - ✅ `docs/DEVELOPER_EXPERIENCE.md` created
 - ✅ All sections complete
 - ✅ Team reviewed
@@ -2000,19 +2167,23 @@ Sections:
 ## Summary by Priority
 
 ### 🔴 Critical (Must Have) - 14 stories
+
 - Epic 1: CI/CD Infrastructure (6 stories)
 - Epic 2: Code Quality & Standards (8 stories)
 
 ### 🟠 High (Should Have) - 20 stories
+
 - Epic 3: Testing Infrastructure (7 stories)
 - Epic 4: Documentation & Onboarding (8 stories)
 - Epic 5: Environment & Security (5 stories)
 
 ### 🟡 Medium (Nice to Have) - 11 stories
+
 - Epic 6: Build & Release Automation (5 stories)
 - Epic 8: Developer Experience (6 stories)
 
 ### 🟢 Low (Optional) - 4 stories
+
 - Epic 7: Monitoring & Analytics (4 stories)
 
 ---

@@ -39,9 +39,7 @@ export default function HomeScreen() {
                 <Text className="text-lg font-bold text-gray-900 mb-1">
                   My Orders
                 </Text>
-                <Text className="text-gray-600 text-sm">
-                  Order history
-                </Text>
+                <Text className="text-gray-600 text-sm">Order history</Text>
               </TouchableOpacity>
 
               <TouchableOpacity className="flex-1 bg-white border-2 border-gray-200 rounded-xl p-5 shadow-sm">
@@ -49,9 +47,7 @@ export default function HomeScreen() {
                 <Text className="text-lg font-bold text-gray-900 mb-1">
                   My Tickets
                 </Text>
-                <Text className="text-gray-600 text-sm">
-                  Active tickets
-                </Text>
+                <Text className="text-gray-600 text-sm">Active tickets</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -66,7 +62,11 @@ export default function HomeScreen() {
                 You're all set!
               </Text>
               <Text className="text-green-700 text-sm">
-                Signed in via {user?.oauth_provider ? user.oauth_provider.charAt(0).toUpperCase() + user.oauth_provider.slice(1) : 'Email'}
+                Signed in via{' '}
+                {user?.oauth_provider
+                  ? user.oauth_provider.charAt(0).toUpperCase() +
+                    user.oauth_provider.slice(1)
+                  : 'Email'}
               </Text>
             </View>
           </View>
@@ -75,4 +75,3 @@ export default function HomeScreen() {
     </ScrollView>
   );
 }
-

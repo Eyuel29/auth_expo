@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+build/
+coverage/
+api/generated/
+*.config.js
+package-lock.json
+CHANGELOG.md
+bun.lock
+.github/
+

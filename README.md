@@ -54,7 +54,8 @@ Update the backend URL:
 EXPO_PUBLIC_SERVER_URL=http://localhost:8080
 ```
 
-**Important**: 
+**Important**:
+
 - For iOS Simulator: Use `http://localhost:8080`
 - For Android Emulator: Use `http://10.0.2.2:8080`
 - For Physical Devices: Use your computer's local IP (e.g., `http://192.168.1.x:8080`)
@@ -121,6 +122,7 @@ auth_expo/
 ⚠️ **Note**: The backend doesn't have a login endpoint yet. Currently, only registration is supported.
 
 When implemented, the flow will be:
+
 1. User enters email and password
 2. App sends `POST /api/v1/auth/login` to backend
 3. Backend validates credentials and returns JWT token
@@ -142,6 +144,7 @@ The app automatically handles route protection:
 The app expects these endpoints from your Express backend:
 
 #### Register User
+
 ```typescript
 POST /api/v1/auth/register
 Body: {
@@ -160,6 +163,7 @@ Response: {
 ```
 
 #### Login User (TODO on backend)
+
 ```typescript
 POST /api/v1/auth/login
 Body: {
@@ -208,16 +212,19 @@ const response = await api.get('/some-protected-endpoint');
 ### Running on Different Platforms
 
 **iOS**:
+
 ```bash
 npm run ios
 ```
 
 **Android**:
+
 ```bash
 npm run android
 ```
 
 **Web** (experimental):
+
 ```bash
 npm run web
 ```
@@ -237,6 +244,7 @@ npm run dev -- --clear
 **Problem**: Can't connect to backend from mobile device
 
 **Solutions**:
+
 - For physical devices, use your computer's local IP address
 - For Android emulator, use `10.0.2.2` instead of `localhost`
 - Ensure backend server is running and accessible
@@ -279,19 +287,23 @@ This project is licensed under the MIT License.
 ## Documentation
 
 ### Getting Started
+
 - [Setup Guide](./SETUP_GUIDE.md) - Quick start guide
 
 ### Implementation Details
+
 - [Authentication](./docs/implementation/authentication.md) - Auth system implementation
 - [Implementation Index](./docs/implementation/README.md) - All implementation docs
 
 ### Planning
+
 - [PRD](./docs/prd/PRD_EXPO_COMPLETE_SETUP.md) - Product Requirements Document
 - [User Stories](./docs/stories/USER_STORIES.md) - Feature user stories
 
 ## Support
 
 For issues and questions:
+
 - Check existing issues on GitHub
 - Create a new issue with detailed description
 - Contact the development team
