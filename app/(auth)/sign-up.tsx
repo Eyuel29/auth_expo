@@ -16,7 +16,7 @@ import { useAuth } from '@/contexts/auth-context';
 export default function SignUpScreen() {
   const router = useRouter();
   const { register, isLoading, error, clearError } = useAuth();
-  
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,7 +63,7 @@ export default function SignUpScreen() {
 
   const handleSignUp = async () => {
     clearError();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -74,21 +74,20 @@ export default function SignUpScreen() {
         password,
         username: username.trim() || undefined,
       });
-      
+
       // Show success message
-      Alert.alert(
-        'Success',
-        'Account created successfully!',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/(tabs)'),
-          },
-        ]
-      );
-    } catch (err) {
+      Alert.alert('Success', 'Account created successfully!', [
+        {
+          text: 'OK',
+          onPress: () => router.replace('/(tabs)'),
+        },
+      ]);
+    } catch (_err) {
       // Error is handled by context
-      Alert.alert('Registration Failed', error || 'An error occurred during registration');
+      Alert.alert(
+        'Registration Failed',
+        error || 'An error occurred during registration'
+      );
     }
   };
 
@@ -121,14 +120,19 @@ export default function SignUpScreen() {
               </Text>
               <TextInput
                 className={`px-4 py-3 border rounded-lg text-base ${
-                  validationErrors.username ? 'border-red-500' : 'border-gray-300'
+                  validationErrors.username
+                    ? 'border-red-500'
+                    : 'border-gray-300'
                 }`}
                 placeholder="Choose a username"
                 value={username}
                 onChangeText={(text) => {
                   setUsername(text);
                   if (validationErrors.username) {
-                    setValidationErrors({ ...validationErrors, username: undefined });
+                    setValidationErrors({
+                      ...validationErrors,
+                      username: undefined,
+                    });
                   }
                 }}
                 autoCapitalize="none"
@@ -156,7 +160,10 @@ export default function SignUpScreen() {
                 onChangeText={(text) => {
                   setEmail(text);
                   if (validationErrors.email) {
-                    setValidationErrors({ ...validationErrors, email: undefined });
+                    setValidationErrors({
+                      ...validationErrors,
+                      email: undefined,
+                    });
                   }
                 }}
                 keyboardType="email-address"
@@ -178,14 +185,19 @@ export default function SignUpScreen() {
               </Text>
               <TextInput
                 className={`px-4 py-3 border rounded-lg text-base ${
-                  validationErrors.password ? 'border-red-500' : 'border-gray-300'
+                  validationErrors.password
+                    ? 'border-red-500'
+                    : 'border-gray-300'
                 }`}
                 placeholder="Create a password"
                 value={password}
                 onChangeText={(text) => {
                   setPassword(text);
                   if (validationErrors.password) {
-                    setValidationErrors({ ...validationErrors, password: undefined });
+                    setValidationErrors({
+                      ...validationErrors,
+                      password: undefined,
+                    });
                   }
                 }}
                 secureTextEntry
@@ -207,14 +219,19 @@ export default function SignUpScreen() {
               </Text>
               <TextInput
                 className={`px-4 py-3 border rounded-lg text-base ${
-                  validationErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                  validationErrors.confirmPassword
+                    ? 'border-red-500'
+                    : 'border-gray-300'
                 }`}
                 placeholder="Confirm your password"
                 value={confirmPassword}
                 onChangeText={(text) => {
                   setConfirmPassword(text);
                   if (validationErrors.confirmPassword) {
-                    setValidationErrors({ ...validationErrors, confirmPassword: undefined });
+                    setValidationErrors({
+                      ...validationErrors,
+                      confirmPassword: undefined,
+                    });
                   }
                 }}
                 secureTextEntry
@@ -268,4 +285,3 @@ export default function SignUpScreen() {
     </KeyboardAvoidingView>
   );
 }
-

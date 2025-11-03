@@ -1,4 +1,5 @@
 # Product Requirements Document (PRD)
+
 ## Complete Expo Repository Setup
 
 **Version:** 1.0
@@ -22,9 +23,11 @@
 ## Executive Summary
 
 ### Vision
+
 Create a production-ready, enterprise-grade Expo repository with complete CI/CD automation, comprehensive documentation, testing infrastructure, and development tools that supports the backend-driven development philosophy.
 
 ### Goals
+
 - ✅ **Infrastructure**: Automated CI/CD pipelines for builds, tests, and deployments
 - ✅ **Quality**: Comprehensive testing, linting, and code quality tools
 - ✅ **Documentation**: Complete guides for setup, development, and deployment
@@ -39,6 +42,7 @@ Create a production-ready, enterprise-grade Expo repository with complete CI/CD 
 ### ✅ What EXISTS (Good Foundation)
 
 #### Configuration Files (8/15) - 53%
+
 - ✅ [package.json](package.json) - Dependencies and scripts
 - ✅ [app.json](app.json) - Expo configuration
 - ✅ [eas.json](eas.json) - EAS Build configuration
@@ -49,6 +53,7 @@ Create a production-ready, enterprise-grade Expo repository with complete CI/CD 
 - ✅ [.gitignore](.gitignore) - Git exclusions
 
 #### Documentation (8/12) - 67%
+
 - ✅ [README.md](README.md) - Excellent overview with backend-driven philosophy
 - ✅ [.env.example](.env.example) - Environment template
 - ✅ [FOUNDATION_COMPLETE.md](FOUNDATION_COMPLETE.md) - Infrastructure guide
@@ -59,6 +64,7 @@ Create a production-ready, enterprise-grade Expo repository with complete CI/CD 
 - ✅ [docs/QUICK_START.md](docs/QUICK_START.md) - Quick start guide
 
 #### Project Structure (100%)
+
 - ✅ [app/](app/) - Expo Router with (auth) and (tabs) groups
 - ✅ [api/](api/) - Generated types and client
 - ✅ [components/](components/) - Reusable UI components
@@ -71,6 +77,7 @@ Create a production-ready, enterprise-grade Expo repository with complete CI/CD 
 - ✅ [docs/](docs/) - Documentation
 
 #### Backend Integration (100%)
+
 - ✅ OpenAPI type generation setup
 - ✅ Auto-sync script ([scripts/sync-backend.js](scripts/sync-backend.js))
 - ✅ Generated types in [api/generated/](api/generated/)
@@ -84,9 +91,11 @@ Create a production-ready, enterprise-grade Expo repository with complete CI/CD 
 ### ❌ What is MISSING (Critical Gaps)
 
 #### 1. CI/CD Infrastructure (0/6) - 0% ❌
+
 **Priority: CRITICAL**
 
 Missing files:
+
 - ❌ `.github/workflows/ci.yml` - Continuous Integration
 - ❌ `.github/workflows/build.yml` - Automated builds
 - ❌ `.github/workflows/release.yml` - Release automation
@@ -95,6 +104,7 @@ Missing files:
 - ❌ `.github/pull_request_template.md` - PR template
 
 **Impact**:
+
 - No automated testing on commits
 - No automated builds for preview/production
 - Manual release process (error-prone)
@@ -103,9 +113,11 @@ Missing files:
 ---
 
 #### 2. Code Quality Tools (0/8) - 0% ❌
+
 **Priority: CRITICAL**
 
 Missing files:
+
 - ❌ `.eslintrc.js` or `.eslintrc.json` - ESLint configuration
 - ❌ `.prettierrc` - Code formatting rules
 - ❌ `.prettierignore` - Files to skip formatting
@@ -116,6 +128,7 @@ Missing files:
 - ❌ `.editorconfig` - Editor consistency
 
 **Impact**:
+
 - Inconsistent code style across team
 - No automated formatting
 - Poor commit message quality
@@ -124,9 +137,11 @@ Missing files:
 ---
 
 #### 3. Testing Infrastructure (0/7) - 0% ❌
+
 **Priority: HIGH**
 
 Missing files:
+
 - ❌ `jest.config.js` - Jest configuration
 - ❌ `jest.setup.js` - Test environment setup
 - ❌ `__tests__/` or `tests/` - Test directory
@@ -136,6 +151,7 @@ Missing files:
 - ❌ Test scripts in package.json
 
 **Impact**:
+
 - No unit tests
 - No integration tests
 - No E2E tests
@@ -145,9 +161,11 @@ Missing files:
 ---
 
 #### 4. Documentation Gaps (4/12) - 33% ⚠️
+
 **Priority: MEDIUM**
 
 Missing files:
+
 - ❌ `CONTRIBUTING.md` - Contribution guidelines
 - ❌ `CHANGELOG.md` - Version history
 - ❌ `LICENSE` - License file
@@ -158,6 +176,7 @@ Missing files:
 - ❌ `docs/API.md` - API documentation
 
 **Impact**:
+
 - New developers need extensive onboarding
 - No contribution process
 - Unclear deployment process
@@ -166,14 +185,17 @@ Missing files:
 ---
 
 #### 5. Environment & Security (3/8) - 38% ⚠️
+
 **Priority: HIGH**
 
 Existing:
+
 - ✅ `.env.example` - Environment template
 - ✅ `.gitignore` - Excludes .env file
 - ✅ EAS credentials setup in app.json
 
 Missing:
+
 - ❌ `.env.local.example` - Local development template
 - ❌ `.env.production.example` - Production template
 - ❌ `.env.staging.example` - Staging template
@@ -181,6 +203,7 @@ Missing:
 - ❌ Security scanning in CI/CD
 
 **Impact**:
+
 - No environment separation
 - No secret scanning
 - Risk of committing secrets
@@ -189,13 +212,16 @@ Missing:
 ---
 
 #### 6. Build & Release (2/7) - 29% ⚠️
+
 **Priority: MEDIUM**
 
 Existing:
+
 - ✅ `eas.json` - Basic build profiles
 - ✅ EAS project ID configured
 
 Missing:
+
 - ❌ Build scripts for different environments
 - ❌ Version bumping automation
 - ❌ Release notes generation
@@ -203,6 +229,7 @@ Missing:
 - ❌ Build caching strategy
 
 **Impact**:
+
 - Manual version management
 - Manual store submissions
 - No release automation
@@ -211,9 +238,11 @@ Missing:
 ---
 
 #### 7. Monitoring & Analytics (0/6) - 0% ❌
+
 **Priority: LOW**
 
 Missing:
+
 - ❌ Error tracking setup (Sentry)
 - ❌ Analytics integration
 - ❌ Performance monitoring
@@ -222,6 +251,7 @@ Missing:
 - ❌ Monitoring documentation
 
 **Impact**:
+
 - Can't track production errors
 - No user analytics
 - Can't measure performance
@@ -230,12 +260,15 @@ Missing:
 ---
 
 #### 8. Development Tools (1/6) - 17% ⚠️
+
 **Priority: MEDIUM**
 
 Existing:
+
 - ✅ npm scripts in package.json
 
 Missing:
+
 - ❌ VSCode workspace settings (`.vscode/settings.json`)
 - ❌ VSCode recommended extensions (`.vscode/extensions.json`)
 - ❌ VSCode debug configuration (`.vscode/launch.json`)
@@ -243,6 +276,7 @@ Missing:
 - ❌ Development utilities
 
 **Impact**:
+
 - Inconsistent IDE setup
 - No standardized debugging
 - Manual repetitive tasks
@@ -254,30 +288,35 @@ Missing:
 ### Functional Requirements
 
 #### FR-1: Continuous Integration
+
 - Automated testing on every push
 - Type checking on every commit
 - Linting on every PR
 - Build validation before merge
 
 #### FR-2: Continuous Deployment
+
 - Automated EAS builds for staging/production
 - Automatic submission to app stores
 - Preview builds for PRs
 - Version management automation
 
 #### FR-3: Code Quality
+
 - Pre-commit hooks for formatting
 - ESLint rules for React Native/Expo
 - Prettier for consistent formatting
 - Commit message validation
 
 #### FR-4: Testing
+
 - Unit tests with Jest
 - Component testing with React Testing Library
 - Integration tests for API calls
 - E2E tests for critical flows (optional)
 
 #### FR-5: Documentation
+
 - Setup instructions
 - Architecture documentation
 - API integration guides
@@ -285,12 +324,14 @@ Missing:
 - Contributing guidelines
 
 #### FR-6: Security
+
 - Environment variable validation
 - Secret scanning in CI
 - Dependency vulnerability checks
 - Secure credential management
 
 #### FR-7: Monitoring
+
 - Error tracking (Sentry/Bugsnag)
 - Analytics integration
 - Performance monitoring
@@ -301,21 +342,25 @@ Missing:
 ### Non-Functional Requirements
 
 #### NFR-1: Performance
+
 - CI pipeline completes in < 10 minutes
 - Build time < 15 minutes
 - Test suite runs in < 5 minutes
 
 #### NFR-2: Reliability
+
 - 99% CI success rate (excluding actual bugs)
 - Automated rollback on failed builds
 - Health checks before deployment
 
 #### NFR-3: Maintainability
+
 - Self-documenting code
 - Comprehensive inline documentation
 - Up-to-date README and guides
 
 #### NFR-4: Developer Experience
+
 - One-command setup
 - Automated environment validation
 - Clear error messages
@@ -326,9 +371,11 @@ Missing:
 ## Implementation Plan
 
 ### Phase 1: Critical Infrastructure (Week 1)
+
 **Goal**: Get CI/CD and code quality tools in place
 
 #### 1.1 Code Quality Setup (Day 1-2)
+
 - [ ] Install ESLint + Prettier
 - [ ] Create `.eslintrc.js` with Expo/React Native rules
 - [ ] Create `.prettierrc` with formatting rules
@@ -336,6 +383,7 @@ Missing:
 - [ ] Format entire codebase
 
 #### 1.2 Git Hooks (Day 2)
+
 - [ ] Install Husky
 - [ ] Install lint-staged
 - [ ] Create pre-commit hook (format + lint)
@@ -343,6 +391,7 @@ Missing:
 - [ ] Create commit-msg hook
 
 #### 1.3 GitHub Actions - CI (Day 3-4)
+
 ```yaml
 # .github/workflows/ci.yml
 - Type checking
@@ -352,6 +401,7 @@ Missing:
 ```
 
 #### 1.4 GitHub Actions - EAS Build (Day 4-5)
+
 ```yaml
 # .github/workflows/build.yml
 - Build on push to main
@@ -360,6 +410,7 @@ Missing:
 ```
 
 **Deliverables**:
+
 - ✅ Code automatically formatted
 - ✅ Commits validated
 - ✅ CI runs on every push
@@ -368,9 +419,11 @@ Missing:
 ---
 
 ### Phase 2: Testing Infrastructure (Week 2)
+
 **Goal**: Add comprehensive testing
 
 #### 2.1 Unit Testing Setup (Day 1-2)
+
 - [ ] Install Jest + React Native Testing Library
 - [ ] Create `jest.config.js`
 - [ ] Create `jest.setup.js`
@@ -378,18 +431,21 @@ Missing:
 - [ ] Write example tests
 
 #### 2.2 Component Testing (Day 3-4)
+
 - [ ] Test auth components
 - [ ] Test form validation
 - [ ] Test navigation
 - [ ] Mock API calls
 
 #### 2.3 Integration Testing (Day 5)
+
 - [ ] Test API client
 - [ ] Test auth flows
 - [ ] Test error handling
 - [ ] Add to CI pipeline
 
 **Deliverables**:
+
 - ✅ 60%+ code coverage
 - ✅ Tests run in CI
 - ✅ Component tests
@@ -398,9 +454,11 @@ Missing:
 ---
 
 ### Phase 3: Documentation & DX (Week 3)
+
 **Goal**: Complete documentation and improve developer experience
 
 #### 3.1 Documentation (Day 1-3)
+
 - [ ] Create `CONTRIBUTING.md`
 - [ ] Create `CHANGELOG.md`
 - [ ] Create `LICENSE`
@@ -410,12 +468,14 @@ Missing:
 - [ ] Create GitHub templates
 
 #### 3.2 VSCode Setup (Day 3)
+
 - [ ] Create `.vscode/settings.json`
 - [ ] Create `.vscode/extensions.json`
 - [ ] Create `.vscode/launch.json`
 - [ ] Add workspace recommendations
 
 #### 3.3 Environment Management (Day 4-5)
+
 - [ ] Create `.env.local.example`
 - [ ] Create `.env.staging.example`
 - [ ] Create `.env.production.example`
@@ -423,6 +483,7 @@ Missing:
 - [ ] Document secret management
 
 **Deliverables**:
+
 - ✅ Complete documentation
 - ✅ VSCode integration
 - ✅ Environment templates
@@ -431,9 +492,11 @@ Missing:
 ---
 
 ### Phase 4: Monitoring & Analytics (Week 4)
+
 **Goal**: Add production monitoring
 
 #### 4.1 Error Tracking (Day 1-2)
+
 - [ ] Setup Sentry account
 - [ ] Install Sentry SDK
 - [ ] Configure error boundaries
@@ -441,6 +504,7 @@ Missing:
 - [ ] Document setup
 
 #### 4.2 Analytics (Day 3-4)
+
 - [ ] Choose analytics provider
 - [ ] Install SDK
 - [ ] Track screen views
@@ -448,12 +512,14 @@ Missing:
 - [ ] Document tracking
 
 #### 4.3 Performance (Day 5)
+
 - [ ] Setup performance monitoring
 - [ ] Add crash reporting
 - [ ] Configure alerts
 - [ ] Create monitoring dashboard
 
 **Deliverables**:
+
 - ✅ Error tracking live
 - ✅ Analytics configured
 - ✅ Performance monitoring
@@ -464,6 +530,7 @@ Missing:
 ## Success Criteria
 
 ### Must Have (P0)
+
 - ✅ CI/CD pipeline running
 - ✅ Code quality tools (ESLint, Prettier, Husky)
 - ✅ Automated builds on push
@@ -472,6 +539,7 @@ Missing:
 - ✅ Basic test infrastructure
 
 ### Should Have (P1)
+
 - ✅ 60%+ test coverage
 - ✅ GitHub PR templates
 - ✅ CONTRIBUTING.md guide
@@ -480,6 +548,7 @@ Missing:
 - ✅ Automated releases
 
 ### Nice to Have (P2)
+
 - ✅ E2E testing with Detox
 - ✅ Error tracking (Sentry)
 - ✅ Analytics integration
@@ -780,12 +849,14 @@ auth_expo/
 ## Environment Variables (Complete Setup)
 
 ### `.env.example` (Existing)
+
 ```env
 # Backend Configuration
 EXPO_PUBLIC_SERVER_URL=https://auth-backend-tbhw.onrender.com
 ```
 
 ### `.env.local.example` (TO ADD)
+
 ```env
 # Local Development
 EXPO_PUBLIC_SERVER_URL=http://localhost:8080
@@ -794,6 +865,7 @@ EXPO_PUBLIC_DEBUG_MODE=true
 ```
 
 ### `.env.staging.example` (TO ADD)
+
 ```env
 # Staging Environment
 EXPO_PUBLIC_SERVER_URL=https://staging-api.example.com
@@ -803,6 +875,7 @@ EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
 ```
 
 ### `.env.production.example` (TO ADD)
+
 ```env
 # Production Environment
 EXPO_PUBLIC_SERVER_URL=https://api.example.com
@@ -818,37 +891,37 @@ EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 ### Current Score: 42/88 (48%)
 
 **Critical Gaps** (Must Fix):
+
 1. ❌ CI/CD Pipeline (0%)
 2. ❌ Code Quality Tools (0%)
 3. ❌ Testing Infrastructure (0%)
 
-**High Priority** (Should Fix):
-4. ⚠️ Security & Environment (38%)
-5. ⚠️ Documentation (33%)
+**High Priority** (Should Fix): 4. ⚠️ Security & Environment (38%) 5. ⚠️ Documentation (33%)
 
-**Medium Priority** (Nice to Have):
-6. ⚠️ Build & Release (29%)
-7. ⚠️ Development Tools (17%)
-8. ❌ Monitoring & Analytics (0%)
+**Medium Priority** (Nice to Have): 6. ⚠️ Build & Release (29%) 7. ⚠️ Development Tools (17%) 8. ❌ Monitoring & Analytics (0%)
 
 ### Recommended Action Plan
 
 **Week 1** - Get to 70% completion:
+
 - Setup ESLint + Prettier + Husky
 - Create GitHub Actions CI/CD
 - Add basic tests
 
 **Week 2** - Get to 85% completion:
+
 - Complete testing infrastructure
 - Add all documentation
 - VSCode workspace setup
 
 **Week 3** - Get to 95% completion:
+
 - Add monitoring
 - Complete environment management
 - Release automation
 
 **Week 4** - Get to 100%:
+
 - E2E testing
 - Performance monitoring
 - Final polish
@@ -868,11 +941,13 @@ EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 ## Appendix
 
 ### A. Related Documents
+
 - [README.md](README.md) - Project overview
 - [FOUNDATION_COMPLETE.md](FOUNDATION_COMPLETE.md) - Current foundation
 - [FRONTEND_DEV_STANDARDS.md](FRONTEND_DEV_STANDARDS.md) - Development philosophy
 
 ### B. References
+
 - [Expo EAS Build](https://docs.expo.dev/build/introduction/)
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [Jest Testing](https://jestjs.io/)

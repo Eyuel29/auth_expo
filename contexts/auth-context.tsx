@@ -3,9 +3,24 @@
  * Provides authentication state and methods to the entire app
  */
 
-import { createContext, useContext, useEffect, useState,type ReactNode } from 'react';
-import { authService, type User,type RegisterPayload, type LoginPayload } from '@/lib/auth/auth-service';
-import { signInWithGoogle, signInWithWeChat, type OAuthResponse } from '@/lib/auth/oauth-service-simple';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
+import {
+  authService,
+  type User,
+  type RegisterPayload,
+  type LoginPayload,
+} from '@/lib/auth/auth-service';
+import {
+  signInWithGoogle,
+  signInWithWeChat,
+  type OAuthResponse,
+} from '@/lib/auth/oauth-service-simple';
 
 interface AuthContextType {
   user: User | null;
@@ -39,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true);
       const hasAuth = await authService.initialize();
-      
+
       if (hasAuth) {
         const currentUser = authService.getCurrentUser();
         setUser(currentUser);
@@ -56,11 +71,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setError(null);
       setIsLoading(true);
-      
+
       const response = await authService.register(payload);
       setUser(response.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Registration failed';
+      const message =
+        err instanceof Error ? err.message : 'Registration failed';
       setError(message);
       throw err;
     } finally {
@@ -72,7 +88,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setError(null);
       setIsLoading(true);
-      
+
       const response = await authService.login(payload);
       setUser(response.user);
     } catch (err) {
@@ -88,12 +104,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setError(null);
       setIsLoading(true);
-      
+
       const response: OAuthResponse = await signInWithGoogle();
       await authService.signInWithOAuth(response.token, response.user);
       setUser(response.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Google sign in failed';
+      const message =
+        err instanceof Error ? err.message : 'Google sign in failed';
       setError(message);
       throw err;
     } finally {
@@ -105,12 +122,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setError(null);
       setIsLoading(true);
-      
+
       const response: OAuthResponse = await signInWithWeChat();
       await authService.signInWithOAuth(response.token, response.user);
       setUser(response.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'WeChat sign in failed';
+      const message =
+        err instanceof Error ? err.message : 'WeChat sign in failed';
       setError(message);
       throw err;
     } finally {
@@ -158,4 +176,3 @@ export function useAuth(): AuthContextType {
   }
   return context;
 }
-

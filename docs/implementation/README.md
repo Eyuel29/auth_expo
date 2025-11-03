@@ -5,7 +5,9 @@ This directory contains detailed implementation documentation for various featur
 ## Available Documentation
 
 ### [Authentication](./authentication.md)
+
 Complete guide to the authentication system including:
+
 - JWT-based authentication architecture
 - OAuth integration (Google, WeChat)
 - Email/password authentication
@@ -17,6 +19,7 @@ Complete guide to the authentication system including:
 As new features are implemented, add documentation here:
 
 ### Planned/Future Topics
+
 - **API Integration** - Backend API communication patterns
 - **State Management** - Global state management strategy
 - **Navigation** - Routing and navigation architecture
@@ -46,24 +49,31 @@ Each implementation doc should include:
 # [Feature Name] Implementation
 
 ## Overview
+
 Brief description and purpose
 
 ## Architecture
+
 High-level architecture and components
 
 ## Core Processes
+
 Main workflows and flows
 
 ## Data Structures
+
 Key interfaces and types
 
 ## Configuration
+
 Environment variables and setup
 
 ## Security Considerations
+
 Important security notes
 
 ## Development vs Production
+
 Current state and production requirements
 ```
 
@@ -73,4 +83,3 @@ Current state and production requirements
 - [README](../../README.md) - Project overview
 - [PRD](../prd/) - Product requirements documents
 - [User Stories](../stories/) - Feature user stories
-

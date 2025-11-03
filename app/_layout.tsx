@@ -1,7 +1,7 @@
 import '../global.css';
 
-import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { AuthProvider, useAuth } from '@/contexts/auth-context';
 
 // Navigation protection component
@@ -27,7 +27,7 @@ function NavigationProtection() {
         router.push('/(tabs)');
       }, 100);
     }
-  }, [isAuthenticated, isLoading, segments]);
+  }, [isAuthenticated, isLoading, segments, router]);
 
   return null;
 }

@@ -7,25 +7,26 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/auth-context';
 
 export default function OAuthSignInScreen() {
   const router = useRouter();
-  const { loginWithGoogle, loginWithWeChat, isLoading, error, clearError } = useAuth();
-  
+  const { loginWithGoogle, loginWithWeChat, isLoading, error, clearError } =
+    useAuth();
+
   const [googleLoading, setGoogleLoading] = useState(false);
   const [wechatLoading, setWechatLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
     clearError();
     setGoogleLoading(true);
-    
+
     try {
       await loginWithGoogle();
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch (_err) {
       Alert.alert('Google Sign In Failed', error || 'An error occurred');
     } finally {
       setGoogleLoading(false);
@@ -35,11 +36,11 @@ export default function OAuthSignInScreen() {
   const handleWeChatSignIn = async () => {
     clearError();
     setWechatLoading(true);
-    
+
     try {
       await loginWithWeChat();
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch (_err) {
       Alert.alert('WeChat Sign In Failed', error || 'An error occurred');
     } finally {
       setWechatLoading(false);
@@ -53,12 +54,8 @@ export default function OAuthSignInScreen() {
       <View className="flex-1 justify-center px-6 py-12">
         {/* Header */}
         <View className="mb-12">
-          <Text className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome
-          </Text>
-          <Text className="text-lg text-gray-600">
-            Sign in to continue
-          </Text>
+          <Text className="text-4xl font-bold text-gray-900 mb-2">Welcome</Text>
+          <Text className="text-lg text-gray-600">Sign in to continue</Text>
         </View>
 
         {/* OAuth Buttons */}
@@ -66,7 +63,9 @@ export default function OAuthSignInScreen() {
           {/* Google Sign In */}
           <TouchableOpacity
             className={`flex-row items-center justify-center py-4 px-6 rounded-lg border-2 ${
-              googleLoading ? 'bg-gray-100 border-gray-200' : 'bg-white border-gray-300'
+              googleLoading
+                ? 'bg-gray-100 border-gray-200'
+                : 'bg-white border-gray-300'
             }`}
             onPress={handleGoogleSignIn}
             disabled={anyLoading}
@@ -144,4 +143,3 @@ export default function OAuthSignInScreen() {
     </ScrollView>
   );
 }
-
