@@ -61,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     } catch (err) {
       console.error('Auth initialization error:', err);
-      setError('Failed to initialize authentication');
+      setError('Unable to restore your session. Please sign in again.');
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(response.user);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Registration failed';
+        err instanceof Error ? err.message : 'Unable to create your account';
       setError(message);
       throw err;
     } finally {
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await authService.login(payload);
       setUser(response.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed';
+      const message = err instanceof Error ? err.message : 'Unable to sign in';
       setError(message);
       throw err;
     } finally {
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(response.user);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Google sign in failed';
+        err instanceof Error ? err.message : 'Unable to sign in with Google';
       setError(message);
       throw err;
     } finally {
@@ -128,7 +128,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(response.user);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'WeChat sign in failed';
+        err instanceof Error ? err.message : 'Unable to sign in with WeChat';
       setError(message);
       throw err;
     } finally {
@@ -143,7 +143,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(null);
     } catch (err) {
       console.error('Logout error:', err);
-      setError('Failed to logout');
+      setError('Unable to sign out. Please try again.');
     } finally {
       setIsLoading(false);
     }

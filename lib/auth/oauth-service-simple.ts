@@ -37,7 +37,7 @@ export async function signInWithGoogle(): Promise<OAuthResponse> {
 
     const response = await axios.post(`${API_BASE_URL}/auth/google/token`, {
       code: mockCode,
-      redirect_uri: 'http://localhost:8080/auth/google/callback',
+      redirect_uri: `${API_BASE_URL}/auth/google/callback`,
     });
 
     return {
@@ -47,7 +47,7 @@ export async function signInWithGoogle(): Promise<OAuthResponse> {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        error.response?.data?.message || 'Failed to sign in with Google'
+        error.response?.data?.message || 'Unable to sign in with Google'
       );
     }
     throw error;
@@ -79,7 +79,7 @@ export async function signInWithWeChat(): Promise<OAuthResponse> {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        error.response?.data?.message || 'Failed to sign in with WeChat'
+        error.response?.data?.message || 'Unable to sign in with WeChat'
       );
     }
     throw error;

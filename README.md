@@ -38,7 +38,7 @@ This is a cross-platform mobile application built with Expo and React Native, fe
 - **Expo CLI**: `npm install -g expo-cli`
 - **EAS CLI**: `npm install -g eas-cli`
 - **iOS**: macOS with Xcode (for iOS development)
-- **Android**: Android Studio with SDK (for Android development)
+- **Android**: Android Studio or VS Code with SDK (for Android development)
 
 ### Installation Steps
 
@@ -161,7 +161,7 @@ This opens the Expo DevTools in your browser. From there:
 
 ### Run on Android Emulator
 
-1. Start Android Studio and launch an emulator
+1. Start Android Studio or VS Code and launch an emulator
 2. Press `a` in the terminal, or run:
 
 ```bash

@@ -27,7 +27,10 @@ export default function OAuthSignInScreen() {
       await loginWithGoogle();
       router.replace('/(tabs)');
     } catch (_err) {
-      Alert.alert('Google Sign In Failed', error || 'An error occurred');
+      Alert.alert(
+        'Sign In Failed',
+        error || 'Unable to sign in with Google. Please try again.'
+      );
     } finally {
       setGoogleLoading(false);
     }
@@ -41,7 +44,10 @@ export default function OAuthSignInScreen() {
       await loginWithWeChat();
       router.replace('/(tabs)');
     } catch (_err) {
-      Alert.alert('WeChat Sign In Failed', error || 'An error occurred');
+      Alert.alert(
+        'Sign In Failed',
+        error || 'Unable to sign in with WeChat. Please try again.'
+      );
     } finally {
       setWechatLoading(false);
     }

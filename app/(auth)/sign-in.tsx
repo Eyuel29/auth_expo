@@ -59,7 +59,11 @@ export default function SignInScreen() {
       router.replace('/(tabs)');
     } catch (_err) {
       // Error is handled by context
-      Alert.alert('Login Failed', error || 'An error occurred during login');
+      Alert.alert(
+        'Sign In Failed',
+        error ||
+          'Unable to sign in. Please check your credentials and try again.'
+      );
     }
   };
 

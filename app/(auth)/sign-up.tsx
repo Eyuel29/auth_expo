@@ -85,8 +85,8 @@ export default function SignUpScreen() {
     } catch (_err) {
       // Error is handled by context
       Alert.alert(
-        'Registration Failed',
-        error || 'An error occurred during registration'
+        'Sign Up Failed',
+        error || 'Unable to create your account. Please try again.'
       );
     }
   };

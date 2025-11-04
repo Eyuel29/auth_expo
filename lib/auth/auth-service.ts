@@ -4,13 +4,12 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { type AxiosInstance } from 'axios';
-
 const API_BASE_URL =
   process.env.EXPO_PUBLIC_SERVER_URL || 'http://localhost:8080';
-const API_PREFIX = '/';
+import axios, { type AxiosInstance } from 'axios';
 const TOKEN_KEY = '@auth_token';
 const USER_KEY = '@auth_user';
+const API_PREFIX = '/';
 
 export interface User {
   id: number;
@@ -132,7 +131,7 @@ class AuthService {
       // TODO: Backend needs to implement POST /auth/login endpoint
       // For now, we'll throw an error
       throw new Error(
-        'Login endpoint not implemented on backend yet. Please use register.'
+        'Unable to sign in at this time. Please create a new account.'
       );
 
       // When backend is ready, uncomment this:
