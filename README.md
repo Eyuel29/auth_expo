@@ -86,8 +86,8 @@ npm run dev
 
 ### Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
+| Variable                 | Description          | Example                 |
+| ------------------------ | -------------------- | ----------------------- |
 | `EXPO_PUBLIC_SERVER_URL` | Backend API base URL | `http://localhost:8080` |
 
 ## 📂 Project Structure
@@ -284,8 +284,8 @@ Triggers cloud builds:
 
 Configure these secrets in **GitHub Settings > Secrets and Variables > Actions**:
 
-| Secret | Description | How to Get |
-|--------|-------------|------------|
+| Secret       | Description               | How to Get                               |
+| ------------ | ------------------------- | ---------------------------------------- |
 | `EXPO_TOKEN` | Expo authentication token | Run `eas login` then `eas whoami --json` |
 
 ## 📦 Android Build & Deployment
@@ -368,39 +368,39 @@ npm run test:e2e
 
 ### Expo Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run start` | Start development server |
-| `npm run android` | Run on Android emulator |
-| `npm run ios` | Run on iOS simulator |
-| `npm run web` | Run on web browser |
-| `npm run dev -- --clear` | Clear cache and start |
+| Command                  | Description              |
+| ------------------------ | ------------------------ |
+| `npm run dev`            | Start development server |
+| `npm run start`          | Start development server |
+| `npm run android`        | Run on Android emulator  |
+| `npm run ios`            | Run on iOS simulator     |
+| `npm run web`            | Run on web browser       |
+| `npm run dev -- --clear` | Clear cache and start    |
 
 ### EAS Build Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run build:android:dev` | Build Android development |
-| `npm run build:android:preview` | Build Android preview |
-| `npm run build:android:production` | Build Android production |
-| `npm run build:ios:dev` | Build iOS development |
-| `npm run build:ios:preview` | Build iOS preview |
-| `npm run build:ios:production` | Build iOS production |
-| `eas build --platform all` | Build both platforms |
-| `eas submit --platform android` | Submit to Play Store |
-| `eas submit --platform ios` | Submit to App Store |
+| Command                            | Description               |
+| ---------------------------------- | ------------------------- |
+| `npm run build:android:dev`        | Build Android development |
+| `npm run build:android:preview`    | Build Android preview     |
+| `npm run build:android:production` | Build Android production  |
+| `npm run build:ios:dev`            | Build iOS development     |
+| `npm run build:ios:preview`        | Build iOS preview         |
+| `npm run build:ios:production`     | Build iOS production      |
+| `eas build --platform all`         | Build both platforms      |
+| `eas submit --platform android`    | Submit to Play Store      |
+| `eas submit --platform ios`        | Submit to App Store       |
 
 ### Linting / Formatting
 
-| Command | Description |
-|---------|-------------|
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint errors |
-| `npm run format` | Format with Prettier |
-| `npm run format:check` | Check formatting |
-| `npm run type-check` | Run TypeScript checks |
-| `npm run check-all` | Run all checks (CI) |
+| Command                | Description           |
+| ---------------------- | --------------------- |
+| `npm run lint`         | Run ESLint            |
+| `npm run lint:fix`     | Fix ESLint errors     |
+| `npm run format`       | Format with Prettier  |
+| `npm run format:check` | Check formatting      |
+| `npm run type-check`   | Run TypeScript checks |
+| `npm run check-all`    | Run all checks (CI)   |
 
 ### Git Hooks
 
@@ -457,6 +457,7 @@ Follow **Conventional Commits** format:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -469,6 +470,7 @@ Follow **Conventional Commits** format:
 - `chore`: Other changes
 
 **Examples:**
+
 ```bash
 git commit -m "feat(auth): add Google OAuth login"
 git commit -m "fix(profile): resolve logout navigation issue on web"

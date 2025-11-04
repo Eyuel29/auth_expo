@@ -37,4 +37,3 @@ docs/
 └── cards/                       # Issue cards
     └── ISSUE_CARDS.md
 ```
-
