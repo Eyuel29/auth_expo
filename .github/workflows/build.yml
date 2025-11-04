@@ -1,3 +1,4 @@
+# EAS Build Workflow - Builds Android/iOS apps using EAS
 name: EAS Build
 
 on:
@@ -27,6 +28,8 @@ jobs:
   build:
     name: EAS Build - ${{ github.event.inputs.platform || 'android' }}
     runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -35,18 +38,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Setup EAS CLI
+        run: npm install -g eas-cli
 
       - name: Run quality checks
         run: npm run check-all
