@@ -28,6 +28,8 @@ jobs:
   build:
     name: EAS Build - ${{ github.event.inputs.platform || 'android' }}
     runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -44,11 +46,6 @@ jobs:
 
       - name: Setup EAS CLI
         run: npm install -g eas-cli
-
-      - name: Authenticate with Expo
-        run: eas login --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Run quality checks
         run: npm run check-all
