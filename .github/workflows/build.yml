@@ -1,3 +1,4 @@
+# EAS Build Workflow - Builds Android/iOS apps using EAS
 name: EAS Build
 
 on:
