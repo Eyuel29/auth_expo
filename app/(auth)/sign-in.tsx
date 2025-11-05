@@ -1,12 +1,12 @@
-import { useState } from 'react';
+imp seState } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
+                        KeyboardAvoidingView,
   Platform,
-  ScrollView,
+  ScrollVi
   ActivityIndicator,
   Alert,
 } from 'react-native';
