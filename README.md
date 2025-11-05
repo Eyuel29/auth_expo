@@ -237,11 +237,13 @@ Runs on every push and pull request:
 └────────┬────────────────────┘
          ↓
 ┌─────────────────────────────┐
-│  Secret Scan (TruffleHog)   │
+│  Run Tests (Jest)           │
+│  - 41 tests                 │
+│  - Coverage report          │
 └────────┬────────────────────┘
          ↓
 ┌─────────────────────────────┐
-│  Dependency Audit           │
+│  Security Audit             │
 └────────┬────────────────────┘
          ↓
 ┌─────────────────────────────┐
@@ -345,25 +347,123 @@ eas submit --platform android
 
 ## 🧪 Testing
 
-### Unit Tests
+### Testing Infrastructure
+
+The project uses **Jest** with **React Testing Library** for comprehensive testing:
+
+- ✅ **Unit Tests**: Test individual functions and API services
+- ✅ **Component Tests**: Test React hooks and contexts
+- ✅ **Integration Tests**: Test complete authentication workflows
+- ✅ **CI Integration**: Automated testing on every push/PR
+
+### Running Tests
 
 ```bash
-npm run test
+# Run all tests
+npm test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+
+# Run tests in CI mode (used by GitHub Actions)
+npm run test:ci
 ```
 
-### Integration Tests
+### Test Coverage
 
-```bash
-npm run test:integration
+Current test coverage for core authentication:
+
+```
+File               | Coverage |
+-------------------|----------|
+api/auth.ts        | 73%      |
+contexts/auth.tsx  | 98%      |
+api/client.ts      | 100%     |
 ```
 
-### End-to-End Tests
+**Test Statistics:**
 
-```bash
-npm run test:e2e
+- ✅ 41 passing tests (18 unit + 14 component + 9 integration)
+- ✅ ~4 second execution time
+- ✅ Automated in CI/CD pipeline
+
+### Test Structure
+
+```
+__tests__/
+├── api/                    # Unit tests for API services
+│   └── auth.test.ts       # Auth API tests (18 tests)
+├── contexts/               # Component tests for contexts
+│   └── auth-context.test.tsx  # Auth context tests (14 tests)
+├── integration/            # End-to-end workflow tests
+│   └── auth-flow.test.tsx # Complete auth flows (9 tests)
+└── utils/                  # Test utilities and helpers
+    └── test-utils.tsx     # Shared test helpers
+
+__mocks__/                  # Mock implementations
+├── api/client.ts          # Mock API client
+└── axios.ts               # Mock axios
 ```
 
-> **Note**: Test infrastructure setup is planned for Phase 2.
+### Writing Tests
+
+**Example Unit Test:**
+
+```typescript
+import * as authApi from '@/api/auth';
+
+it('should register a user successfully', async () => {
+  const result = await authApi.register({
+    email: 'test@example.com',
+    password: 'password123',
+  });
+
+  expect(result.user).toBeDefined();
+  expect(result.token).toBeTruthy();
+});
+```
+
+**Example Component Test:**
+
+```typescript
+import { renderHook, waitFor } from '@testing-library/react-native';
+import { AuthProvider, useAuth } from '@/contexts/auth-context';
+
+it('should authenticate user', async () => {
+  const { result } = renderHook(() => useAuth(), {
+    wrapper: AuthProvider,
+  });
+
+  await result.current.register({
+    email: 'test@example.com',
+    password: 'password123',
+  });
+
+  await waitFor(() => {
+    expect(result.current.isAuthenticated).toBe(true);
+  });
+});
+```
+
+### Testing Best Practices
+
+1. **Isolation**: Each test is independent with proper cleanup
+2. **Mocking**: External dependencies (API, storage) are mocked
+3. **Async Handling**: Use `waitFor` for React state updates
+4. **Coverage**: Focus on critical authentication paths
+5. **Fast**: Tests run in ~4 seconds for quick feedback
+
+### CI/CD Testing
+
+Tests run automatically in GitHub Actions:
+
+- ✅ On every push to `main` or `develop`
+- ✅ On every pull request
+- ✅ With coverage reporting
+- ✅ Fails build if tests fail
 
 ## 🛠️ Useful Commands
 
