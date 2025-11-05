@@ -1122,9 +1122,9 @@ EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 | **Build & Release** | 29% | 60% | +31% ⚠️ |
 | **Development Tools** | 17% | 33% | +16% ⚠️ |
 | **Monitoring & Analytics** | 0% | 0% | 0% ❌ |
-| **OVERALL** | **48%** | **75%*** | **+27%** |
+| **OVERALL** | **48%** | **75%**\* | **+27%** |
 
-\* 75% includes project-foundation branch testing infrastructure. Main branch is at 56%.
+\*75% includes project-foundation branch testing infrastructure. Main branch is at 56%.
 
 ---
 
