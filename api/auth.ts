@@ -160,10 +160,13 @@ function configureInterceptors(): void {
     async (config) => {
       const token = await getToken();
       if (token) {
-        config.headers = {
-          ...(config.headers ?? {}),
-          Authorization: `Bearer ${token}`,
-        };
+        config.headers = config.headers ?? {};
+        if ('set' in config.headers) {
+          config.headers.set('Authorization', `Bearer ${token}`);
+        } else {
+          (config.headers as Record<string, string>)['Authorization'] =
+            `Bearer ${token}`;
+        }
       }
       return config;
     },
