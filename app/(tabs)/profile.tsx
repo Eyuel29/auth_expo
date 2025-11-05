@@ -26,10 +26,10 @@ export default function ProfileScreen() {
         try {
           setLoggingOut(true);
           await logout();
-          router.push('/(auth)/oauth-sign-in');
+          router.push('/(auth)/sign-in');
         } catch (error) {
           console.error('Logout error:', error);
-          Alert.alert('Error', 'Failed to logout. Please try again.');
+          Alert.alert('Error', 'Unable to sign out. Please try again.');
           setLoggingOut(false);
         }
       }
@@ -47,10 +47,10 @@ export default function ProfileScreen() {
             try {
               setLoggingOut(true);
               await logout();
-              router.push('/(auth)/oauth-sign-in');
+              router.push('/(auth)/sign-in');
             } catch (error) {
               console.error('Logout error:', error);
-              Alert.alert('Error', 'Failed to logout. Please try again.');
+              Alert.alert('Error', 'Unable to sign out. Please try again.');
               setLoggingOut(false);
             }
           },

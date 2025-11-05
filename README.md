@@ -38,7 +38,7 @@ This is a cross-platform mobile application built with Expo and React Native, fe
 - **Expo CLI**: `npm install -g expo-cli`
 - **EAS CLI**: `npm install -g eas-cli`
 - **iOS**: macOS with Xcode (for iOS development)
-- **Android**: Android Studio with SDK (for Android development)
+- **Android**: Android Studio or VS Code with SDK (for Android development)
 
 ### Installation Steps
 
@@ -96,9 +96,8 @@ npm run dev
 auth_expo/
 ├── app/                          # Expo Router pages (file-based routing)
 │   ├── (auth)/                   # Public authentication screens
-│   │   ├── oauth-sign-in.tsx    # OAuth sign-in (Google, WeChat)
-│   │   ├── sign-in.tsx          # Email/password sign-in
-│   │   ├── sign-up.tsx          # User registration
+│   │   ├── sign-in.tsx          # Email/password sign-in with OAuth options
+│   │   ├── sign-up.tsx          # User registration with OAuth options
 │   │   └── _layout.tsx          # Auth layout
 │   ├── (tabs)/                   # Protected app screens with tab navigation
 │   │   ├── index.tsx            # Home screen
@@ -106,13 +105,15 @@ auth_expo/
 │   │   └── _layout.tsx          # Tab layout
 │   ├── _layout.tsx              # Root layout
 │   └── index.tsx                # Entry point
+├── api/                          # API clients and services
+│   ├── auth.ts                  # Auth + OAuth helpers
+│   └── client.ts                # Shared Axios client
 ├── components/                   # Reusable UI components
 ├── contexts/                     # React Context providers
 │   └── auth-context.tsx         # Authentication context
-├── lib/                          # Core libraries and utilities
-│   └── auth/                     # Authentication services
-│       ├── auth-service.ts      # Auth API client
-│       └── oauth-service-simple.ts  # OAuth service
+├── shared/                       # Shared types and utilities
+│   └── types/                    # Type definitions
+│       └── auth.ts              # Auth-related types
 ├── docs/                         # Documentation
 │   ├── foundation/               # Foundation setup docs
 │   ├── implementation/           # Implementation guides
@@ -161,7 +162,7 @@ This opens the Expo DevTools in your browser. From there:
 
 ### Run on Android Emulator
 
-1. Start Android Studio and launch an emulator
+1. Start Android Studio or VS Code and launch an emulator
 2. Press `a` in the terminal, or run:
 
 ```bash
@@ -236,11 +237,13 @@ Runs on every push and pull request:
 └────────┬────────────────────┘
          ↓
 ┌─────────────────────────────┐
-│  Secret Scan (TruffleHog)   │
+│  Run Tests (Jest)           │
+│  - 41 tests                 │
+│  - Coverage report          │
 └────────┬────────────────────┘
          ↓
 ┌─────────────────────────────┐
-│  Dependency Audit           │
+│  Security Audit             │
 └────────┬────────────────────┘
          ↓
 ┌─────────────────────────────┐
@@ -344,25 +347,123 @@ eas submit --platform android
 
 ## 🧪 Testing
 
-### Unit Tests
+### Testing Infrastructure
+
+The project uses **Jest** with **React Testing Library** for comprehensive testing:
+
+- ✅ **Unit Tests**: Test individual functions and API services
+- ✅ **Component Tests**: Test React hooks and contexts
+- ✅ **Integration Tests**: Test complete authentication workflows
+- ✅ **CI Integration**: Automated testing on every push/PR
+
+### Running Tests
 
 ```bash
-npm run test
+# Run all tests
+npm test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+
+# Run tests in CI mode (used by GitHub Actions)
+npm run test:ci
 ```
 
-### Integration Tests
+### Test Coverage
 
-```bash
-npm run test:integration
+Current test coverage for core authentication:
+
+```
+File               | Coverage |
+-------------------|----------|
+api/auth.ts        | 73%      |
+contexts/auth.tsx  | 98%      |
+api/client.ts      | 100%     |
 ```
 
-### End-to-End Tests
+**Test Statistics:**
 
-```bash
-npm run test:e2e
+- ✅ 41 passing tests (18 unit + 14 component + 9 integration)
+- ✅ ~4 second execution time
+- ✅ Automated in CI/CD pipeline
+
+### Test Structure
+
+```
+__tests__/
+├── api/                    # Unit tests for API services
+│   └── auth.test.ts       # Auth API tests (18 tests)
+├── contexts/               # Component tests for contexts
+│   └── auth-context.test.tsx  # Auth context tests (14 tests)
+├── integration/            # End-to-end workflow tests
+│   └── auth-flow.test.tsx # Complete auth flows (9 tests)
+└── utils/                  # Test utilities and helpers
+    └── test-utils.tsx     # Shared test helpers
+
+__mocks__/                  # Mock implementations
+├── api/client.ts          # Mock API client
+└── axios.ts               # Mock axios
 ```
 
-> **Note**: Test infrastructure setup is planned for Phase 2.
+### Writing Tests
+
+**Example Unit Test:**
+
+```typescript
+import * as authApi from '@/api/auth';
+
+it('should register a user successfully', async () => {
+  const result = await authApi.register({
+    email: 'test@example.com',
+    password: 'password123',
+  });
+
+  expect(result.user).toBeDefined();
+  expect(result.token).toBeTruthy();
+});
+```
+
+**Example Component Test:**
+
+```typescript
+import { renderHook, waitFor } from '@testing-library/react-native';
+import { AuthProvider, useAuth } from '@/contexts/auth-context';
+
+it('should authenticate user', async () => {
+  const { result } = renderHook(() => useAuth(), {
+    wrapper: AuthProvider,
+  });
+
+  await result.current.register({
+    email: 'test@example.com',
+    password: 'password123',
+  });
+
+  await waitFor(() => {
+    expect(result.current.isAuthenticated).toBe(true);
+  });
+});
+```
+
+### Testing Best Practices
+
+1. **Isolation**: Each test is independent with proper cleanup
+2. **Mocking**: External dependencies (API, storage) are mocked
+3. **Async Handling**: Use `waitFor` for React state updates
+4. **Coverage**: Focus on critical authentication paths
+5. **Fast**: Tests run in ~4 seconds for quick feedback
+
+### CI/CD Testing
+
+Tests run automatically in GitHub Actions:
+
+- ✅ On every push to `main` or `develop`
+- ✅ On every pull request
+- ✅ With coverage reporting
+- ✅ Fails build if tests fail
 
 ## 🛠️ Useful Commands
 

@@ -10,20 +10,16 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import {
-  authService,
-  type User,
-  type RegisterPayload,
-  type LoginPayload,
-} from '@/lib/auth/auth-service';
-import {
-  signInWithGoogle,
-  signInWithWeChat,
-  type OAuthResponse,
-} from '@/lib/auth/oauth-service-simple';
+import * as authApi from '@/api/auth';
+import type {
+  AuthUser,
+  LoginPayload,
+  OAuthResponse,
+  RegisterPayload,
+} from '@/shared/types/auth';
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   register: (payload: RegisterPayload) => Promise<void>;
@@ -42,7 +38,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,15 +49,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const initializeAuth = async () => {
     try {
       setIsLoading(true);
-      const hasAuth = await authService.initialize();
+      const hasAuth = await authApi.initializeAuth();
 
       if (hasAuth) {
-        const currentUser = authService.getCurrentUser();
+        const currentUser = authApi.getCurrentUser();
         setUser(currentUser);
       }
     } catch (err) {
       console.error('Auth initialization error:', err);
-      setError('Failed to initialize authentication');
+      setError('Unable to restore your session. Please sign in again.');
     } finally {
       setIsLoading(false);
     }
@@ -72,11 +68,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       setIsLoading(true);
 
-      const response = await authService.register(payload);
+      const response = await authApi.register(payload);
       setUser(response.user);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Registration failed';
+        err instanceof Error ? err.message : 'Unable to create your account';
       setError(message);
       throw err;
     } finally {
@@ -89,10 +85,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       setIsLoading(true);
 
-      const response = await authService.login(payload);
+      const response = await authApi.login(payload);
       setUser(response.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed';
+      const message = err instanceof Error ? err.message : 'Unable to sign in';
       setError(message);
       throw err;
     } finally {
@@ -105,12 +101,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       setIsLoading(true);
 
-      const response: OAuthResponse = await signInWithGoogle();
-      await authService.signInWithOAuth(response.token, response.user);
+      const response: OAuthResponse = await authApi.signInWithGoogle();
+      await authApi.signInWithOAuth(response.token, response.user);
       setUser(response.user);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Google sign in failed';
+        err instanceof Error ? err.message : 'Unable to sign in with Google';
       setError(message);
       throw err;
     } finally {
@@ -123,12 +119,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       setIsLoading(true);
 
-      const response: OAuthResponse = await signInWithWeChat();
-      await authService.signInWithOAuth(response.token, response.user);
+      const response: OAuthResponse = await authApi.signInWithWeChat();
+      await authApi.signInWithOAuth(response.token, response.user);
       setUser(response.user);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'WeChat sign in failed';
+        err instanceof Error ? err.message : 'Unable to sign in with WeChat';
       setError(message);
       throw err;
     } finally {
@@ -139,11 +135,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = async () => {
     try {
       setIsLoading(true);
-      await authService.logout();
+      await authApi.logout();
       setUser(null);
     } catch (err) {
       console.error('Logout error:', err);
-      setError('Failed to logout');
+      setError('Unable to sign out. Please try again.');
     } finally {
       setIsLoading(false);
     }

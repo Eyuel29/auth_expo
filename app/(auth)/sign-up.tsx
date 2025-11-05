@@ -10,23 +10,35 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/auth-context';
 
 export default function SignUpScreen() {
   const router = useRouter();
-  const { register, isLoading, error, clearError } = useAuth();
+  const {
+    register,
+    loginWithGoogle,
+    loginWithWeChat,
+    isLoading,
+    error,
+    clearError,
+  } = useAuth();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [wechatLoading, setWechatLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{
     username?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
   }>({});
+
+  const anyLoading = isLoading || googleLoading || wechatLoading;
 
   const validateForm = (): boolean => {
     const errors: typeof validationErrors = {};
@@ -85,9 +97,43 @@ export default function SignUpScreen() {
     } catch (_err) {
       // Error is handled by context
       Alert.alert(
-        'Registration Failed',
-        error || 'An error occurred during registration'
+        'Sign Up Failed',
+        error || 'Unable to create your account. Please try again.'
       );
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    clearError();
+    setGoogleLoading(true);
+
+    try {
+      await loginWithGoogle();
+      router.replace('/(tabs)');
+    } catch (_err) {
+      Alert.alert(
+        'Sign Up Failed',
+        error || 'Unable to continue with Google. Please try again.'
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleWeChatSignUp = async () => {
+    clearError();
+    setWechatLoading(true);
+
+    try {
+      await loginWithWeChat();
+      router.replace('/(tabs)');
+    } catch (_err) {
+      Alert.alert(
+        'Sign Up Failed',
+        error || 'Unable to continue with WeChat. Please try again.'
+      );
+    } finally {
+      setWechatLoading(false);
     }
   };
 
@@ -137,7 +183,7 @@ export default function SignUpScreen() {
                 }}
                 autoCapitalize="none"
                 autoCorrect={false}
-                editable={!isLoading}
+                editable={!anyLoading}
               />
               {validationErrors.username && (
                 <Text className="text-sm text-red-500 mt-1">
@@ -169,7 +215,7 @@ export default function SignUpScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                editable={!isLoading}
+                editable={!anyLoading}
               />
               {validationErrors.email && (
                 <Text className="text-sm text-red-500 mt-1">
@@ -203,7 +249,7 @@ export default function SignUpScreen() {
                 secureTextEntry
                 autoCapitalize="none"
                 autoCorrect={false}
-                editable={!isLoading}
+                editable={!anyLoading}
               />
               {validationErrors.password && (
                 <Text className="text-sm text-red-500 mt-1">
@@ -237,7 +283,7 @@ export default function SignUpScreen() {
                 secureTextEntry
                 autoCapitalize="none"
                 autoCorrect={false}
-                editable={!isLoading}
+                editable={!anyLoading}
               />
               {validationErrors.confirmPassword && (
                 <Text className="text-sm text-red-500 mt-1">
@@ -259,7 +305,7 @@ export default function SignUpScreen() {
                 isLoading ? 'bg-blue-300' : 'bg-blue-500'
               }`}
               onPress={handleSignUp}
-              disabled={isLoading}
+              disabled={anyLoading}
             >
               {isLoading ? (
                 <ActivityIndicator color="white" />
@@ -271,11 +317,64 @@ export default function SignUpScreen() {
             </TouchableOpacity>
           </View>
 
+          {/* OAuth Options */}
+          <View className="my-6 flex-row items-center">
+            <View className="flex-1 h-px bg-gray-300" />
+            <Text className="mx-4 text-gray-500 text-sm">or</Text>
+            <View className="flex-1 h-px bg-gray-300" />
+          </View>
+
+          <View className="space-y-4">
+            <TouchableOpacity
+              className={`flex-row items-center justify-center py-4 px-6 rounded-lg border-2 ${
+                googleLoading
+                  ? 'bg-gray-100 border-gray-200'
+                  : 'bg-white border-gray-300'
+              }`}
+              onPress={handleGoogleSignUp}
+              disabled={anyLoading}
+            >
+              {googleLoading ? (
+                <ActivityIndicator color="#4285F4" />
+              ) : (
+                <>
+                  <Ionicons name="logo-google" size={24} color="#4285F4" />
+                  <Text className="text-gray-900 text-lg font-semibold ml-3">
+                    Continue with Google
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className={`flex-row items-center justify-center py-4 px-6 rounded-lg ${
+                wechatLoading ? 'bg-green-600' : 'bg-green-500'
+              }`}
+              onPress={handleWeChatSignUp}
+              disabled={anyLoading}
+            >
+              {wechatLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <Ionicons
+                    name="chatbubble-ellipses"
+                    size={24}
+                    color="white"
+                  />
+                  <Text className="text-white text-lg font-semibold ml-3">
+                    Continue with WeChat
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
+
           {/* Sign In Link */}
           <View className="mt-6 flex-row justify-center">
             <Text className="text-gray-600">Already have an account? </Text>
             <Link href="/(auth)/sign-in" asChild>
-              <TouchableOpacity disabled={isLoading}>
+              <TouchableOpacity disabled={anyLoading}>
                 <Text className="text-blue-500 font-semibold">Sign In</Text>
               </TouchableOpacity>
             </Link>
