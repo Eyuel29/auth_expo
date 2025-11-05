@@ -1,16 +1,25 @@
-# EAS Build Workflow - Builds Android/iOS apps using EAS
+# EAS Build Workflow - Automatic builds based on branch
+#
+# Automatically triggers EAS builds when you push to:
+# - 'dev' branch → Development build (all platforms)
+# - 'main' branch → Production build (all platforms)
+#
+# Or trigger manually from GitHub Actions UI for custom builds
+#
 name: EAS Build
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - dev      # Development builds
+      - main     # Production builds
   workflow_dispatch:
     inputs:
       platform:
         description: 'Platform to build'
         required: true
         type: choice
+        default: 'all'
         options:
           - all
           - ios
@@ -19,6 +28,7 @@ on:
         description: 'Build profile'
         required: true
         type: choice
+        default: 'preview'
         options:
           - development
           - preview
@@ -26,7 +36,7 @@ on:
 
 jobs:
   build:
-    name: EAS Build - ${{ github.event.inputs.platform || 'android' }}
+    name: EAS Build - ${{ github.event.inputs.platform || 'all' }}
     runs-on: ubuntu-latest
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -42,20 +52,45 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Setup EAS CLI
         run: npm install -g eas-cli
 
+      - name: Determine build profile from branch
+        id: profile
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          
+          # Auto-detect profile: dev → development, main → production
+          if [ "$BRANCH_NAME" = "main" ]; then
+            PROFILE="production"
+          elif [ "$BRANCH_NAME" = "dev" ]; then
+            PROFILE="development"
+          else
+            PROFILE="preview"  # Fallback for manual triggers
+          fi
+          
+          echo "profile=$PROFILE" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "✅ Branch '$BRANCH_NAME' → Profile '$PROFILE'"
+
       - name: Run quality checks
         run: npm run check-all
+        continue-on-error: ${{ steps.profile.outputs.profile == 'development' }}
 
       - name: Build on EAS
         run: |
-          PLATFORM="${{ github.event.inputs.platform || 'android' }}"
-          PROFILE="${{ github.event.inputs.profile || 'preview' }}"
+          # Use manual input if workflow_dispatch, otherwise use detected profile
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PLATFORM="${{ github.event.inputs.platform }}"
+            PROFILE="${{ github.event.inputs.profile }}"
+          else
+            PLATFORM="all"  # Always build all platforms for automatic builds
+            PROFILE="${{ steps.profile.outputs.profile }}"
+          fi
           
-          echo "Building for platform: $PLATFORM with profile: $PROFILE"
+          echo "🚀 Building for platform: $PLATFORM with profile: $PROFILE"
           
           if [ "$PLATFORM" = "all" ]; then
             eas build --platform all --profile $PROFILE --non-interactive --no-wait
@@ -68,10 +103,18 @@ jobs:
         if: github.event_name == 'push'
         with:
           script: |
+            const profile = '${{ steps.profile.outputs.profile }}';
+            const branch = '${{ steps.profile.outputs.branch }}';
+            const emoji = profile === 'production' ? '🚀' : '🔧';
+            
             github.rest.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               commit_sha: context.sha,
-              body: '🚀 EAS Build started! Check progress at https://expo.dev'
+              body: `${emoji} **EAS Build Started**\n\n` +
+                    `**Branch:** \`${branch}\`\n` +
+                    `**Profile:** \`${profile}\`\n` +
+                    `**Platform:** all (iOS + Android)\n\n` +
+                    `Check progress at [expo.dev](https://expo.dev)`
             })
 
