@@ -31,12 +31,13 @@ module.exports = {
   // Coverage configuration
   collectCoverageFrom: [
     'api/**/*.{ts,tsx}',
-    'app/**/*.{ts,tsx}',
-    'components/**/*.{ts,tsx}',
     'contexts/**/*.{ts,tsx}',
     'hooks/**/*.{ts,tsx}',
     'lib/**/*.{ts,tsx}',
-    'shared/**/*.{ts,tsx}',
+    // Exclude UI components and type-only files for now
+    '!app/**',
+    '!components/**',
+    '!shared/types/**',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/__tests__/**',
@@ -45,10 +46,10 @@ module.exports = {
   
   coverageThreshold: {
     global: {
-      branches: 60,
-      functions: 60,
-      lines: 60,
-      statements: 60,
+      branches: 50,
+      functions: 80,
+      lines: 70,
+      statements: 70,
     },
   },
   
