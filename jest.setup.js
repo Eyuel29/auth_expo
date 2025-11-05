@@ -64,4 +64,3 @@ global.console = {
 afterEach(() => {
   jest.clearAllMocks();
 });
-
