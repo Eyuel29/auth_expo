@@ -96,9 +96,8 @@ npm run dev
 auth_expo/
 ├── app/                          # Expo Router pages (file-based routing)
 │   ├── (auth)/                   # Public authentication screens
-│   │   ├── oauth-sign-in.tsx    # OAuth sign-in (Google, WeChat)
-│   │   ├── sign-in.tsx          # Email/password sign-in
-│   │   ├── sign-up.tsx          # User registration
+│   │   ├── sign-in.tsx          # Email/password sign-in with OAuth options
+│   │   ├── sign-up.tsx          # User registration with OAuth options
 │   │   └── _layout.tsx          # Auth layout
 │   ├── (tabs)/                   # Protected app screens with tab navigation
 │   │   ├── index.tsx            # Home screen
@@ -106,13 +105,15 @@ auth_expo/
 │   │   └── _layout.tsx          # Tab layout
 │   ├── _layout.tsx              # Root layout
 │   └── index.tsx                # Entry point
+├── api/                          # API clients and services
+│   ├── auth.ts                  # Auth + OAuth helpers
+│   └── client.ts                # Shared Axios client
 ├── components/                   # Reusable UI components
 ├── contexts/                     # React Context providers
 │   └── auth-context.tsx         # Authentication context
-├── lib/                          # Core libraries and utilities
-│   └── auth/                     # Authentication services
-│       ├── auth-service.ts      # Auth API client
-│       └── oauth-service-simple.ts  # OAuth service
+├── shared/                       # Shared types and utilities
+│   └── types/                    # Type definitions
+│       └── auth.ts              # Auth-related types
 ├── docs/                         # Documentation
 │   ├── foundation/               # Foundation setup docs
 │   ├── implementation/           # Implementation guides

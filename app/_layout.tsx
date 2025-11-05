@@ -16,10 +16,10 @@ function NavigationProtection() {
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!isAuthenticated && !inAuthGroup) {
-      // Redirect to OAuth sign-in if not authenticated
+      // Redirect to sign-in if not authenticated
       // Use push for better web compatibility
       setTimeout(() => {
-        router.push('/(auth)/oauth-sign-in');
+        router.push('/(auth)/sign-in');
       }, 100);
     } else if (isAuthenticated && inAuthGroup) {
       // Redirect to home if authenticated and in auth screens

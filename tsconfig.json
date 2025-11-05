@@ -12,10 +12,12 @@
     "strict": true,
     "paths": {
       "@/*": ["./*"],
+      "@/api/*": ["./api/*"],
+      "@/app/*": ["./app/*"],
       "@/components/*": ["./components/*"],
       "@/contexts/*": ["./contexts/*"],
       "@/lib/*": ["./lib/*"],
-      "@/app/*": ["./app/*"]
+      "@/shared/*": ["./shared/*"]
     },
     "target": "ESNext",
     "module": "ESNext",

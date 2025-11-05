@@ -26,7 +26,7 @@ export default function ProfileScreen() {
         try {
           setLoggingOut(true);
           await logout();
-          router.push('/(auth)/oauth-sign-in');
+          router.push('/(auth)/sign-in');
         } catch (error) {
           console.error('Logout error:', error);
           Alert.alert('Error', 'Unable to sign out. Please try again.');
@@ -47,7 +47,7 @@ export default function ProfileScreen() {
             try {
               setLoggingOut(true);
               await logout();
-              router.push('/(auth)/oauth-sign-in');
+              router.push('/(auth)/sign-in');
             } catch (error) {
               console.error('Logout error:', error);
               Alert.alert('Error', 'Unable to sign out. Please try again.');
