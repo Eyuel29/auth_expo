@@ -1,0 +1,32 @@
+{
+  "recommendations": [
+    // Essential
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next",
+
+    // React Native / Expo
+    "msjsdiag.vscode-react-native",
+    "expo.vscode-expo-tools",
+
+    // Testing
+    "orta.vscode-jest",
+
+    // Tailwind CSS
+    "bradlc.vscode-tailwindcss",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Utilities
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "naumovs.color-highlight",
+    "usernamehw.errorlens",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-mermaid"
+  ],
+  "unwantedRecommendations": []
+}
