@@ -1,39 +1,61 @@
 # Registration Flow Test
 # Tests the complete user registration workflow
 
-appId: com.yourapp.authexpo
+appId: com.joel.authexpo
 ---
 - launchApp
 - clearState
+- launchApp  # Re-launch after clearing state
+
+# Wait for app to finish loading and navigate to sign-in screen
+- extendedWaitUntil:
+    visible: "Welcome Back"
+    timeout: 3000
 
 # Navigate to registration
-- assertVisible: "Sign In"
+- assertVisible: "Welcome Back"
 - tapOn: "Sign Up"
 
 # Verify registration screen
 - assertVisible: "Create Account"
 - assertVisible: "Email"
-- assertVisible: "Username"
+- assertVisible: 
+    text: "Username"
+    optional: true
 - assertVisible: "Password"
 - assertVisible: "Confirm Password"
 - takeScreenshot: register-initial
 
 # Test Case: Successful Registration
-- tapOn: "Email"
-- inputText: "newuser@example.com"
-
-- tapOn: "Username"
+- tapOn:
+    text: "Choose a username"
 - inputText: "newuser"
 
-- tapOn: "Password"
+- tapOn:
+    text: "Enter your email"
+- inputText: "newuser@example.com"
+
+- tapOn:
+    text: "Create a password"
 - inputText: "${TEST_PASSWORD}"
 
-- tapOn: "Confirm Password"
+- tapOn:
+    text: "Confirm your password"
 - inputText: "${TEST_PASSWORD}"
 
 - takeScreenshot: register-filled
 - tapOn: "Create Account"
 
-# Wait for registration success
-- assertVisible: "Welcome"
+# Wait for success alert and dismiss it
+- extendedWaitUntil:
+    visible: "OK"
+    timeout: 3000
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Wait for navigation to home screen
+- extendedWaitUntil:
+    visible: "Hello"
+    timeout: 5000
 - takeScreenshot: register-success

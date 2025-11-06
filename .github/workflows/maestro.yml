@@ -26,7 +26,7 @@ permissions:
 jobs:
   maestro-ios:
     name: Maestro iOS Tests
-    runs-on: macos-14  # Latest macOS for M1 support
+    runs-on: macos-15  # macOS 15 has Xcode 16.1+ required by React Native
     timeout-minutes: 45
     
     steps:
@@ -58,11 +58,24 @@ jobs:
       
       - name: Setup iOS Simulator
         run: |
-          # List available simulators
+          # List available simulators and runtimes
+          echo "Available simulators:"
           xcrun simctl list devices available
+          echo "Available runtimes:"
+          xcrun simctl list runtimes
           
-          # Boot iPhone 15 simulator (or create if doesn't exist)
-          DEVICE_ID=$(xcrun simctl create "Maestro-iPhone-15" com.apple.CoreSimulator.SimDeviceType.iPhone-15 com.apple.CoreSimulator.SimRuntime.iOS-17-2 || xcrun simctl list devices | grep "iPhone 15" | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+          # Use latest available iOS runtime (macOS 15 has iOS 18)
+          RUNTIME=$(xcrun simctl list runtimes | grep "iOS" | tail -1 | grep -oE 'com\.apple\.CoreSimulator\.SimRuntime\.[^ ]+' || echo "iOS")
+          echo "Using runtime: $RUNTIME"
+          
+          # Create or use existing iPhone 15 simulator
+          DEVICE_ID=$(xcrun simctl create "Maestro-iPhone-15" com.apple.CoreSimulator.SimDeviceType.iPhone-15 "$RUNTIME" 2>/dev/null || xcrun simctl list devices | grep "iPhone 15" | grep "Booted\|Shutdown" | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+          
+          if [ -z "$DEVICE_ID" ]; then
+            echo "Error: Could not create or find simulator"
+            exit 1
+          fi
+          
           echo "Device ID: $DEVICE_ID"
           xcrun simctl boot "$DEVICE_ID" || true
           
@@ -225,7 +238,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-33-${{ runner.os }}
+          key: avd-33-${{ runner.os }}-v2
       
       - name: Create AVD and generate snapshot
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -235,8 +248,11 @@ jobs:
           target: google_apis
           arch: x86_64
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -partition-size 4096
           disable-animations: true
+          cores: 2
+          avd-name: test
+          emulator-boot-timeout: 900
           script: echo "Generated AVD snapshot for caching."
       
       - name: Setup Gradle cache
@@ -263,8 +279,12 @@ jobs:
           api-level: 33
           target: google_apis
           arch: x86_64
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          avd-name: test
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -partition-size 4096
           disable-animations: true
+          cores: 2
+          emulator-boot-timeout: 900
           script: |
             # Install APK
             adb install android/app/build/outputs/apk/debug/app-debug.apk

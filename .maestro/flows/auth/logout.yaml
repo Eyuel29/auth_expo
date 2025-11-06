@@ -1,23 +1,26 @@
 # Logout Flow Test
 # Tests user logout functionality
 
-appId: com.yourapp.authexpo
+appId: com.joel.authexpo
 ---
 # Prerequisite: User must be logged in
 
-# Navigate to profile screen
+# Navigate to profile screen  
 - tapOn: "Profile"
-- assertVisible: "Profile"
+- assertVisible: "Edit Profile"
 - takeScreenshot: profile-before-logout
 
 # Tap logout button
 - tapOn: "Logout"
 
-# Confirm logout if there's a confirmation dialog
-- tapOn:
-    text: "Confirm"
-    optional: true
+# Wait for alert and confirm logout
+- extendedWaitUntil:
+    visible: "Logout"
+    timeout: 2000
+- tapOn: "Logout"
 
 # Wait for navigation back to sign-in
-- assertVisible: "Sign In"
+- extendedWaitUntil:
+    visible: "Welcome Back"
+    timeout: 5000
 - takeScreenshot: logout-success

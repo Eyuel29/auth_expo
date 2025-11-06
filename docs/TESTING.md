@@ -441,7 +441,7 @@ maestro test .maestro/flows/auth/login.yaml
 **Basic flow structure:**
 
 ```yaml
-appId: com.yourapp.authexpo
+appId: com.joel.authexpo
 ---
 - launchApp
 - assertVisible: 'Welcome'

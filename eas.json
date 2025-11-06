@@ -12,6 +12,7 @@
     },
     "preview": {
       "distribution": "internal",
+      "developmentClient": false,
       "env": {
         "APP_ENV": "staging"
       },

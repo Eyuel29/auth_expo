@@ -1,36 +1,39 @@
 # Tab Navigation Test
 # Tests navigation between different tabs in the app
 
-appId: com.yourapp.authexpo
+appId: com.joel.authexpo
 ---
 # Prerequisite: User must be logged in
 - runFlow: ../auth/login.yaml
 
-# Verify we're on home screen
+# Verify we're on home screen (shows "Hello, {name}!")
+- assertVisible:
+    text: "Hello"
 - assertVisible: "Home"
 - takeScreenshot: nav-home
 
 # Navigate to Profile tab
 - tapOn: "Profile"
-- assertVisible: "Profile"
-- assertVisible: "Email"
+- assertVisible: "Edit Profile"
+- assertVisible: "Logout"
 - takeScreenshot: nav-profile
 
 # Navigate back to Home
 - tapOn: "Home"
-- assertVisible: "Home"
+- assertVisible:
+    text: "Hello"
 - takeScreenshot: nav-back-to-home
 
 # Test rapid tab switching
 - tapOn: "Profile"
 - tapOn: "Home"
 - tapOn: "Profile"
-- assertVisible: "Profile"
+- assertVisible: "Edit Profile"
 
 # Verify state persistence
 - tapOn: "Home"
 - tapOn: "Profile"
-- assertVisible: "Profile"
+- assertVisible: "Edit Profile"
 # Profile data should still be visible (not reloaded)
 
 - takeScreenshot: nav-state-persistent

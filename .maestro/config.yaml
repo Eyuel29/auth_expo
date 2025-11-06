@@ -1,7 +1,7 @@
 # Maestro Global Configuration
 # This file contains global settings for Maestro tests
 
-appId: com.yourapp.authexpo  # Update with your actual app bundle ID
+appId: com.joel.authexpo  # Actual working bundle ID
 
 ---
 # Environment variables for tests

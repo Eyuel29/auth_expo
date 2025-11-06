@@ -5,9 +5,12 @@
 includeTags: []
 excludeTags: []
 
-# Flow patterns - include subdirectories
+# Flow patterns - only include active flows (exclude DISABLED_ folders)
 flows:
-  - "flows/**/*.yaml"
+  - "flows/auth/*.yaml"
+  - "flows/navigation/*.yaml"
+  # Payment flows are disabled until implementation is complete
+  # - "flows/payment/*.yaml"
 
 # Environment variables for all tests
 env:

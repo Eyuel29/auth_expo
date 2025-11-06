@@ -1,27 +1,38 @@
 # Login Flow Test
 # Tests the complete login workflow with valid credentials
 
-appId: com.yourapp.authexpo
+appId: com.joel.authexpo
 ---
 - launchApp
 - clearState
+- launchApp  # Re-launch after clearing state
+
+# Wait for app to finish loading and navigate to sign-in screen
+# (Auth initialization + navigation redirect takes ~100-500ms)
+- extendedWaitUntil:
+    visible: "Welcome Back"
+    timeout: 3000
 
 # Verify we're on the sign-in screen
-- assertVisible: "Sign In"
+- assertVisible: "Welcome Back"
 - assertVisible: "Email"
 - assertVisible: "Password"
 - takeScreenshot: login-initial
 
 # Test Case: Valid Login
-- tapOn: "Email"
+- tapOn: 
+    text: "Enter your email"
 - inputText: "${TEST_EMAIL}"
-- tapOn: "Password"
+- tapOn: 
+    text: "Enter your password"
 - inputText: "${TEST_PASSWORD}"
 - takeScreenshot: login-filled
 
 - tapOn: "Sign In"
 
-# Wait for navigation and verify success
-- assertVisible: "Welcome"
+# Wait for navigation and verify success (home screen shows "Hello, {name}!")
+- extendedWaitUntil:
+    visible: "Hello"
+    timeout: 5000
 - takeScreenshot: login-success
 - assertVisible: "Profile"
