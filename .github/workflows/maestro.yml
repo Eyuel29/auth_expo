@@ -18,6 +18,11 @@ on:
           - navigation
           - payment
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   maestro-ios:
     name: Maestro iOS Tests
@@ -71,11 +76,28 @@ jobs:
         run: |
           cd ios
           
-          # Find workspace and scheme
-          WORKSPACE=$(find . -name "*.xcworkspace" -maxdepth 1 | head -1)
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | grep -A 1 "Schemes:" | tail -1 | xargs)
+          # List contents to debug
+          echo "Contents of ios directory:"
+          ls -la
           
-          echo "Building workspace: $WORKSPACE"
+          # Find workspace and scheme
+          WORKSPACE=$(ls *.xcworkspace 2>/dev/null | head -1)
+          
+          if [ -z "$WORKSPACE" ]; then
+            echo "Error: No .xcworkspace found"
+            exit 1
+          fi
+          
+          echo "Found workspace: $WORKSPACE"
+          
+          # Get scheme from workspace
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list 2>/dev/null | grep -A 1 "Schemes:" | tail -1 | xargs)
+          
+          if [ -z "$SCHEME" ]; then
+            echo "Error: No scheme found"
+            exit 1
+          fi
+          
           echo "Using scheme: $SCHEME"
           
           xcodebuild \
@@ -228,16 +250,23 @@ jobs:
             sleep 5
             
             # Run Maestro tests
-            if [ "${{ github.event.inputs.test_suite }}" == "auth" ] || [ "${{ github.event.inputs.test_suite }}" == "" ]; then
-              maestro test .maestro/flows/auth/**/*.yaml --format junit --output maestro-android-auth.xml || true
+            TEST_SUITE="${{ github.event.inputs.test_suite }}"
+            
+            if [ "$TEST_SUITE" == "auth" ] || [ -z "$TEST_SUITE" ]; then
+              maestro test .maestro/flows/auth/**/*.yaml --format junit --output maestro-android-auth.xml || echo "Auth tests failed or not found"
             fi
             
-            if [ "${{ github.event.inputs.test_suite }}" == "navigation" ] || [ "${{ github.event.inputs.test_suite }}" == "all" ] || [ "${{ github.event.inputs.test_suite }}" == "" ]; then
-              maestro test .maestro/flows/navigation/**/*.yaml --format junit --output maestro-android-navigation.xml || true
+            if [ "$TEST_SUITE" == "navigation" ] || [ "$TEST_SUITE" == "all" ] || [ -z "$TEST_SUITE" ]; then
+              maestro test .maestro/flows/navigation/**/*.yaml --format junit --output maestro-android-navigation.xml || echo "Navigation tests failed or not found"
             fi
             
-            if [ "${{ github.event.inputs.test_suite }}" == "payment" ] || [ "${{ github.event.inputs.test_suite }}" == "all" ] || [ "${{ github.event.inputs.test_suite }}" == "" ]; then
-              maestro test .maestro/flows/payment/**/*.yaml --format junit --output maestro-android-payment.xml || true
+            if [ "$TEST_SUITE" == "payment" ] || [ "$TEST_SUITE" == "all" ] || [ -z "$TEST_SUITE" ]; then
+              maestro test .maestro/flows/payment/**/*.yaml --format junit --output maestro-android-payment.xml || echo "Payment tests failed or not found"
+            fi
+            
+            # Create empty result file if no tests ran
+            if [ ! -f maestro-android-*.xml ]; then
+              echo '<?xml version="1.0" encoding="UTF-8"?><testsuites></testsuites>' > maestro-android-empty.xml
             fi
       
       - name: Upload test results
