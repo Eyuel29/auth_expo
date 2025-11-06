@@ -1,105 +1,407 @@
 import { apiClient } from '@/api/client';
 import * as paymentApi from '@/api/payment';
 import type {
-  PaymentIntent,
+  CheckoutSessionResponse,
+  CheckoutSession,
+  StripeCustomer,
   PaymentMethod,
+  PaymentIntentDetails,
   Subscription,
   SubscriptionPlan,
-} from '@/api/payment';
+} from '@/shared/types/payment';
 
 jest.mock('@/api/client');
 
-describe('Payment API', () => {
+/**
+ * Payment API Tests
+ *
+ * Testing Stripe Checkout Sessions flow (aligned with backend)
+ * Backend: /home/eyuel/synque/express/src/modules/payments/stripe/
+ */
+
+describe('Payment API - Stripe Checkout Sessions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('createPaymentIntent', () => {
-    it('should create a payment intent successfully', async () => {
-      const mockIntent: PaymentIntent = {
-        id: 'pi_123',
-        clientSecret: 'pi_123_secret_456',
-        amount: 999,
-        currency: 'usd',
-        status: 'requires_payment_method',
+  // ==========================================================================
+  // Checkout Sessions (Primary Payment Flow)
+  // ==========================================================================
+
+  describe('createCheckoutSession', () => {
+    it('should create a checkout session successfully', async () => {
+      const mockSessionResponse: CheckoutSessionResponse = {
+        session_id: 'cs_test_mock_123456',
+        checkout_url: 'https://checkout.stripe.com/pay/cs_test_mock_123456',
+        expires_at: '2025-11-07T12:00:00Z',
       };
 
       (apiClient.post as jest.Mock).mockResolvedValueOnce({
-        data: mockIntent,
+        data: mockSessionResponse,
       });
 
-      const result = await paymentApi.createPaymentIntent({
-        amount: 999,
-        currency: 'usd',
-      });
-
-      expect(apiClient.post).toHaveBeenCalledWith('/payments/intents', {
-        amount: 999,
-        currency: 'usd',
-      });
-      expect(result).toEqual(mockIntent);
-      expect(result.clientSecret).toBeTruthy();
-    });
-
-    it('should handle payment intent creation errors', async () => {
-      (apiClient.post as jest.Mock).mockRejectedValueOnce({
-        isAxiosError: true,
-        response: {
-          data: { message: 'Insufficient funds' },
-        },
-      });
-
-      await expect(
-        paymentApi.createPaymentIntent({
-          amount: 999,
-          currency: 'usd',
-        })
-      ).rejects.toThrow('Insufficient funds');
-    });
-  });
-
-  describe('confirmPayment', () => {
-    it('should confirm payment successfully', async () => {
-      const mockConfirmedIntent: PaymentIntent = {
-        id: 'pi_123',
-        clientSecret: 'pi_123_secret_456',
-        amount: 999,
-        currency: 'usd',
-        status: 'succeeded',
-      };
-
-      (apiClient.post as jest.Mock).mockResolvedValueOnce({
-        data: mockConfirmedIntent,
-      });
-
-      const result = await paymentApi.confirmPayment({
-        paymentIntentId: 'pi_123',
-        paymentMethodId: 'pm_456',
+      const result = await paymentApi.createCheckoutSession({
+        order_id: 42,
+        success_url: 'myapp://payment/success',
+        cancel_url: 'myapp://payment/cancel',
       });
 
       expect(apiClient.post).toHaveBeenCalledWith(
-        '/payments/intents/pi_123/confirm',
-        { paymentMethodId: 'pm_456' }
+        '/payments/stripe/checkout-session',
+        {
+          order_id: 42,
+          success_url: 'myapp://payment/success',
+          cancel_url: 'myapp://payment/cancel',
+        }
       );
-      expect(result.status).toBe('succeeded');
+      expect(result.session_id).toBe('cs_test_mock_123456');
+      expect(result.checkout_url).toContain('checkout.stripe.com');
+      expect(result.expires_at).toBeTruthy();
     });
 
-    it('should handle payment confirmation errors', async () => {
+    it('should create checkout session without optional URLs', async () => {
+      const mockSessionResponse: CheckoutSessionResponse = {
+        session_id: 'cs_test_mock_789',
+        checkout_url: 'https://checkout.stripe.com/pay/cs_test_mock_789',
+        expires_at: '2025-11-07T12:00:00Z',
+      };
+
+      (apiClient.post as jest.Mock).mockResolvedValueOnce({
+        data: mockSessionResponse,
+      });
+
+      const result = await paymentApi.createCheckoutSession({
+        order_id: 42,
+      });
+
+      expect(apiClient.post).toHaveBeenCalledWith(
+        '/payments/stripe/checkout-session',
+        {
+          order_id: 42,
+        }
+      );
+      expect(result.session_id).toBeTruthy();
+    });
+
+    it('should handle order not found error', async () => {
       (apiClient.post as jest.Mock).mockRejectedValueOnce({
         isAxiosError: true,
         response: {
-          data: { message: 'Card declined' },
+          status: 404,
+          data: { error: 'Order not found' },
         },
       });
 
       await expect(
-        paymentApi.confirmPayment({
-          paymentIntentId: 'pi_123',
-          paymentMethodId: 'pm_456',
-        })
-      ).rejects.toThrow('Card declined');
+        paymentApi.createCheckoutSession({ order_id: 999 })
+      ).rejects.toThrow('Order not found');
+    });
+
+    it('should handle order already paid error', async () => {
+      (apiClient.post as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 400,
+          data: { error: 'Order already paid or invalid status' },
+        },
+      });
+
+      await expect(
+        paymentApi.createCheckoutSession({ order_id: 42 })
+      ).rejects.toThrow('Order already paid or invalid status');
+    });
+
+    it('should handle invalid order_id validation error', async () => {
+      (apiClient.post as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 422,
+          data: {
+            error: 'Validation failed',
+            code: 'STRIPE_INVALID_ORDER_ID',
+            message: 'order_id must be a valid number',
+          },
+        },
+      });
+
+      await expect(
+        paymentApi.createCheckoutSession({ order_id: NaN as unknown as number })
+      ).rejects.toThrow('order_id must be a valid number');
+    });
+
+    it('should handle network errors', async () => {
+      (apiClient.post as jest.Mock).mockRejectedValueOnce(
+        new Error('Network error')
+      );
+
+      await expect(
+        paymentApi.createCheckoutSession({ order_id: 42 })
+      ).rejects.toThrow('Network error');
     });
   });
+
+  describe('getCheckoutSession', () => {
+    it('should retrieve checkout session details successfully', async () => {
+      const mockSession: CheckoutSession = {
+        session_id: 'cs_test_mock_123',
+        order_id: 42,
+        amount: 5000, // $50.00 in cents
+        currency: 'SGD',
+        status: 'completed',
+        payment_status: 'paid',
+        expires_at: '2025-11-07T12:00:00Z',
+      };
+
+      (apiClient.get as jest.Mock).mockResolvedValueOnce({
+        data: mockSession,
+      });
+
+      const result = await paymentApi.getCheckoutSession('cs_test_mock_123');
+
+      expect(apiClient.get).toHaveBeenCalledWith(
+        '/payments/stripe/session/cs_test_mock_123'
+      );
+      expect(result.session_id).toBe('cs_test_mock_123');
+      expect(result.status).toBe('completed');
+      expect(result.payment_status).toBe('paid');
+      expect(result.amount).toBe(5000);
+    });
+
+    it('should retrieve pending checkout session', async () => {
+      const mockSession: CheckoutSession = {
+        session_id: 'cs_test_pending',
+        order_id: 42,
+        amount: 5000,
+        currency: 'SGD',
+        status: 'pending',
+        payment_status: null,
+        expires_at: '2025-11-07T12:00:00Z',
+      };
+
+      (apiClient.get as jest.Mock).mockResolvedValueOnce({
+        data: mockSession,
+      });
+
+      const result = await paymentApi.getCheckoutSession('cs_test_pending');
+
+      expect(result.status).toBe('pending');
+      expect(result.payment_status).toBeNull();
+    });
+
+    it('should handle session not found error', async () => {
+      (apiClient.get as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 404,
+          data: { error: 'Session not found' },
+        },
+      });
+
+      await expect(paymentApi.getCheckoutSession('cs_invalid')).rejects.toThrow(
+        'Session not found'
+      );
+    });
+
+    it('should handle access denied error', async () => {
+      (apiClient.get as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 403,
+          data: { error: 'Access denied - session does not belong to user' },
+        },
+      });
+
+      await expect(
+        paymentApi.getCheckoutSession('cs_other_user')
+      ).rejects.toThrow('Access denied');
+    });
+  });
+
+  // ==========================================================================
+  // Stripe Customer Management
+  // ==========================================================================
+
+  describe('createStripeCustomer', () => {
+    it('should create a Stripe customer successfully', async () => {
+      const mockCustomer: StripeCustomer = {
+        customer_id: 'cus_mock_123',
+        email: 'user@example.com',
+        name: 'John Doe',
+        payment_methods: [],
+      };
+
+      (apiClient.post as jest.Mock).mockResolvedValueOnce({
+        data: mockCustomer,
+      });
+
+      const result = await paymentApi.createStripeCustomer({
+        email: 'user@example.com',
+        name: 'John Doe',
+      });
+
+      expect(apiClient.post).toHaveBeenCalledWith('/payments/stripe/customer', {
+        email: 'user@example.com',
+        name: 'John Doe',
+      });
+      expect(result.customer_id).toBe('cus_mock_123');
+      expect(result.email).toBe('user@example.com');
+    });
+
+    it('should create customer without name', async () => {
+      const mockCustomer: StripeCustomer = {
+        customer_id: 'cus_mock_456',
+        email: 'user2@example.com',
+        name: null,
+        payment_methods: [],
+      };
+
+      (apiClient.post as jest.Mock).mockResolvedValueOnce({
+        data: mockCustomer,
+      });
+
+      const result = await paymentApi.createStripeCustomer({
+        email: 'user2@example.com',
+      });
+
+      expect(result.name).toBeNull();
+    });
+  });
+
+  describe('getStripeCustomer', () => {
+    it('should retrieve customer details successfully', async () => {
+      const mockCustomer: StripeCustomer = {
+        customer_id: 'cus_mock_123',
+        email: 'user@example.com',
+        name: 'John Doe',
+        payment_methods: [
+          {
+            id: 'pm_123',
+            type: 'card',
+            card: {
+              brand: 'visa',
+              last4: '4242',
+              expMonth: 12,
+              expYear: 2025,
+            },
+          },
+        ],
+      };
+
+      (apiClient.get as jest.Mock).mockResolvedValueOnce({
+        data: mockCustomer,
+      });
+
+      const result = await paymentApi.getStripeCustomer(1);
+
+      expect(apiClient.get).toHaveBeenCalledWith('/payments/stripe/customer/1');
+      expect(result.customer_id).toBe('cus_mock_123');
+      expect(result.payment_methods).toHaveLength(1);
+    });
+
+    it('should handle access denied error', async () => {
+      (apiClient.get as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 403,
+          data: { error: 'Access denied' },
+        },
+      });
+
+      await expect(paymentApi.getStripeCustomer(999)).rejects.toThrow(
+        'Access denied'
+      );
+    });
+  });
+
+  // ==========================================================================
+  // Payment Intent (Read-only)
+  // ==========================================================================
+
+  describe('getPaymentIntent', () => {
+    it('should retrieve payment intent details successfully', async () => {
+      const mockIntent: PaymentIntentDetails = {
+        payment_intent_id: 'pi_123abc456def',
+        amount: 5000,
+        currency: 'sgd',
+        status: 'succeeded',
+        order_id: 42,
+        created: 1699300000,
+        charges: {
+          total: 1,
+          data: [],
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockResolvedValueOnce({
+        data: mockIntent,
+      });
+
+      const result = await paymentApi.getPaymentIntent('pi_123abc456def');
+
+      expect(apiClient.get).toHaveBeenCalledWith(
+        '/payments/stripe/payment-intent/pi_123abc456def'
+      );
+      expect(result.payment_intent_id).toBe('pi_123abc456def');
+      expect(result.status).toBe('succeeded');
+      expect(result.charges.total).toBe(1);
+    });
+
+    it('should retrieve processing payment intent', async () => {
+      const mockIntent: PaymentIntentDetails = {
+        payment_intent_id: 'pi_processing',
+        amount: 5000,
+        currency: 'sgd',
+        status: 'processing',
+        order_id: 42,
+        created: 1699300000,
+        charges: {
+          total: 0,
+          data: [],
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockResolvedValueOnce({
+        data: mockIntent,
+      });
+
+      const result = await paymentApi.getPaymentIntent('pi_processing');
+
+      expect(result.status).toBe('processing');
+      expect(result.charges.total).toBe(0);
+    });
+
+    it('should handle payment intent not found', async () => {
+      (apiClient.get as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 404,
+          data: { error: 'Payment intent not found' },
+        },
+      });
+
+      await expect(paymentApi.getPaymentIntent('pi_invalid')).rejects.toThrow(
+        'Payment intent not found'
+      );
+    });
+
+    it('should handle access denied for other user payment intent', async () => {
+      (apiClient.get as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 403,
+          data: { error: 'Access denied' },
+        },
+      });
+
+      await expect(
+        paymentApi.getPaymentIntent('pi_other_user')
+      ).rejects.toThrow('Access denied');
+    });
+  });
+
+  // ==========================================================================
+  // Payment Methods (Future Implementation)
+  // ==========================================================================
 
   describe('getPaymentMethods', () => {
     it('should fetch payment methods successfully', async () => {
@@ -196,6 +498,10 @@ describe('Payment API', () => {
       ).rejects.toThrow('Payment method not found');
     });
   });
+
+  // ==========================================================================
+  // Subscription Management (Future Implementation)
+  // ==========================================================================
 
   describe('Subscription Management', () => {
     describe('createSubscription', () => {
@@ -323,6 +629,10 @@ describe('Payment API', () => {
     });
   });
 
+  // ==========================================================================
+  // Error Handling
+  // ==========================================================================
+
   describe('Error Handling', () => {
     it('should handle network errors', async () => {
       (apiClient.post as jest.Mock).mockRejectedValueOnce(
@@ -330,10 +640,7 @@ describe('Payment API', () => {
       );
 
       await expect(
-        paymentApi.createPaymentIntent({
-          amount: 999,
-          currency: 'usd',
-        })
+        paymentApi.createCheckoutSession({ order_id: 42 })
       ).rejects.toThrow('Network error');
     });
 
@@ -345,11 +652,22 @@ describe('Payment API', () => {
       });
 
       await expect(
-        paymentApi.createPaymentIntent({
-          amount: 999,
-          currency: 'usd',
-        })
+        paymentApi.createCheckoutSession({ order_id: 42 })
       ).rejects.toThrow();
+    });
+
+    it('should handle server errors', async () => {
+      (apiClient.post as jest.Mock).mockRejectedValueOnce({
+        isAxiosError: true,
+        response: {
+          status: 500,
+          data: { error: 'Internal server error' },
+        },
+      });
+
+      await expect(
+        paymentApi.createCheckoutSession({ order_id: 42 })
+      ).rejects.toThrow('Internal server error');
     });
   });
 });
