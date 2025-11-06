@@ -70,9 +70,17 @@ jobs:
       - name: Build iOS app for simulator
         run: |
           cd ios
+          
+          # Find workspace and scheme
+          WORKSPACE=$(find . -name "*.xcworkspace" -maxdepth 1 | head -1)
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | grep -A 1 "Schemes:" | tail -1 | xargs)
+          
+          echo "Building workspace: $WORKSPACE"
+          echo "Using scheme: $SCHEME"
+          
           xcodebuild \
-            -workspace *.xcworkspace \
-            -scheme *.xcodeproj \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build \
