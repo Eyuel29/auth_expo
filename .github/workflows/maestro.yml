@@ -72,6 +72,11 @@ jobs:
       - name: Prebuild iOS app
         run: npx expo prebuild --platform ios --clean
       
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install
+      
       - name: Build iOS app for simulator
         run: |
           cd ios
@@ -193,6 +198,14 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
       
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          df -h
+      
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
@@ -226,13 +239,23 @@ jobs:
           disable-animations: true
           script: echo "Generated AVD snapshot for caching."
       
+      - name: Setup Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+      
       - name: Prebuild Android app
         run: npx expo prebuild --platform android --clean
       
       - name: Build Android APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --max-workers=2
       
       - name: Run Maestro tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
