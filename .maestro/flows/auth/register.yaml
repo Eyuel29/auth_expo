@@ -1,0 +1,39 @@
+# Registration Flow Test
+# Tests the complete user registration workflow
+
+appId: com.yourapp.authexpo
+---
+- launchApp
+- clearState
+
+# Navigate to registration
+- assertVisible: "Sign In"
+- tapOn: "Sign Up"
+
+# Verify registration screen
+- assertVisible: "Create Account"
+- assertVisible: "Email"
+- assertVisible: "Username"
+- assertVisible: "Password"
+- assertVisible: "Confirm Password"
+- takeScreenshot: register-initial
+
+# Test Case: Successful Registration
+- tapOn: "Email"
+- inputText: "newuser@example.com"
+
+- tapOn: "Username"
+- inputText: "newuser"
+
+- tapOn: "Password"
+- inputText: "${TEST_PASSWORD}"
+
+- tapOn: "Confirm Password"
+- inputText: "${TEST_PASSWORD}"
+
+- takeScreenshot: register-filled
+- tapOn: "Create Account"
+
+# Wait for registration success
+- assertVisible: "Welcome"
+- takeScreenshot: register-success

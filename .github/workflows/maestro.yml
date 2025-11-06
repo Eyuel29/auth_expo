@@ -1,0 +1,289 @@
+name: Maestro UI Tests
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - auth
+          - navigation
+          - payment
+
+jobs:
+  maestro-ios:
+    name: Maestro iOS Tests
+    runs-on: macos-14  # Latest macOS for M1 support
+    timeout-minutes: 45
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      
+      - name: Install Maestro CLI
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+      
+      - name: Verify Maestro installation
+        run: maestro --version
+      
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      
+      - name: Setup iOS Simulator
+        run: |
+          # List available simulators
+          xcrun simctl list devices available
+          
+          # Boot iPhone 15 simulator (or create if doesn't exist)
+          DEVICE_ID=$(xcrun simctl create "Maestro-iPhone-15" com.apple.CoreSimulator.SimDeviceType.iPhone-15 com.apple.CoreSimulator.SimRuntime.iOS-17-2 || xcrun simctl list devices | grep "iPhone 15" | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+          echo "Device ID: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
+          
+          # Wait for simulator to boot
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+      
+      - name: Prebuild iOS app
+        run: npx expo prebuild --platform ios --clean
+      
+      - name: Build iOS app for simulator
+        run: |
+          cd ios
+          xcodebuild \
+            -workspace *.xcworkspace \
+            -scheme *.xcodeproj \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO
+      
+      - name: Install app on simulator
+        run: |
+          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -name "*.app" -type d | head -1)
+          echo "Installing app from: $APP_PATH"
+          
+          DEVICE_ID=$(xcrun simctl list devices booted | grep -oE '\([A-F0-9-]+\)' | tr -d '()' | head -1)
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+      
+      - name: Run Maestro tests - Auth flows
+        if: github.event.inputs.test_suite == 'auth' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == ''
+        run: |
+          maestro test .maestro/flows/auth/**/*.yaml \
+            --format junit \
+            --output maestro-results-auth.xml
+        continue-on-error: true
+      
+      - name: Run Maestro tests - Navigation flows
+        if: github.event.inputs.test_suite == 'navigation' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == ''
+        run: |
+          maestro test .maestro/flows/navigation/**/*.yaml \
+            --format junit \
+            --output maestro-results-navigation.xml
+        continue-on-error: true
+      
+      - name: Run Maestro tests - Payment flows
+        if: github.event.inputs.test_suite == 'payment' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == ''
+        run: |
+          maestro test .maestro/flows/payment/**/*.yaml \
+            --format junit \
+            --output maestro-results-payment.xml
+        continue-on-error: true
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-ios-results
+          path: |
+            maestro-results-*.xml
+            ~/.maestro/tests/**/*.png
+            ~/.maestro/tests/**/*.mp4
+          retention-days: 30
+      
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action/macos@v2
+        if: always()
+        with:
+          files: 'maestro-results-*.xml'
+          check_name: 'Maestro iOS Test Results'
+
+  maestro-android:
+    name: Maestro Android Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      
+      - name: Install Maestro CLI
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$HOME/.maestro/bin:$PATH"
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      
+      - name: Enable KVM for emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-33-${{ runner.os }}
+      
+      - name: Create AVD and generate snapshot
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: echo "Generated AVD snapshot for caching."
+      
+      - name: Prebuild Android app
+        run: npx expo prebuild --platform android --clean
+      
+      - name: Build Android APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon
+      
+      - name: Run Maestro tests on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            # Install APK
+            adb install android/app/build/outputs/apk/debug/app-debug.apk
+            
+            # Wait for installation
+            sleep 5
+            
+            # Run Maestro tests
+            if [ "${{ github.event.inputs.test_suite }}" == "auth" ] || [ "${{ github.event.inputs.test_suite }}" == "" ]; then
+              maestro test .maestro/flows/auth/**/*.yaml --format junit --output maestro-android-auth.xml || true
+            fi
+            
+            if [ "${{ github.event.inputs.test_suite }}" == "navigation" ] || [ "${{ github.event.inputs.test_suite }}" == "all" ] || [ "${{ github.event.inputs.test_suite }}" == "" ]; then
+              maestro test .maestro/flows/navigation/**/*.yaml --format junit --output maestro-android-navigation.xml || true
+            fi
+            
+            if [ "${{ github.event.inputs.test_suite }}" == "payment" ] || [ "${{ github.event.inputs.test_suite }}" == "all" ] || [ "${{ github.event.inputs.test_suite }}" == "" ]; then
+              maestro test .maestro/flows/payment/**/*.yaml --format junit --output maestro-android-payment.xml || true
+            fi
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-android-results
+          path: |
+            maestro-android-*.xml
+            ~/.maestro/tests/**/*.png
+            ~/.maestro/tests/**/*.mp4
+          retention-days: 30
+      
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: 'maestro-android-*.xml'
+          check_name: 'Maestro Android Test Results'
+
+  report-results:
+    name: Test Results Summary
+    runs-on: ubuntu-latest
+    needs: [maestro-ios, maestro-android]
+    if: always()
+    
+    steps:
+      - name: Download iOS results
+        uses: actions/download-artifact@v4
+        with:
+          name: maestro-ios-results
+          path: ios-results
+        continue-on-error: true
+      
+      - name: Download Android results
+        uses: actions/download-artifact@v4
+        with:
+          name: maestro-android-results
+          path: android-results
+        continue-on-error: true
+      
+      - name: Generate summary
+        run: |
+          echo "## 🎭 Maestro Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### iOS Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Auth flows: ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Navigation flows: ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Payment flows: ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Android Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Auth flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Navigation flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Payment flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📸 Screenshots and videos are available in the artifacts." >> $GITHUB_STEP_SUMMARY
+

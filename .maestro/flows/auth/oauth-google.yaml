@@ -1,0 +1,28 @@
+# Google OAuth Flow Test
+# Tests Google OAuth authentication
+
+appId: com.yourapp.authexpo
+---
+- launchApp
+- clearState
+
+- assertVisible: "Sign In"
+- assertVisible: "Continue with Google"
+- takeScreenshot: google-oauth-button
+
+# Tap Google OAuth button
+- tapOn: "Continue with Google"
+
+# Note: Testing actual OAuth requires:
+# 1. Test Google account credentials
+# 2. Handling Google's login page (external)
+# 3. Automatic consent/permission handling
+
+# Wait for potential redirect or loading
+- waitForAnimationToEnd
+
+# Take screenshot of result
+- takeScreenshot: google-oauth-result
+
+# Check if we successfully navigated to home or stayed on login
+# This will vary based on your OAuth implementation

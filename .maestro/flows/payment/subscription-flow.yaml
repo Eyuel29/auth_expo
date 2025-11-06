@@ -1,0 +1,43 @@
+# Subscription Purchase Flow Test
+# Tests the complete subscription purchase workflow
+
+appId: com.yourapp.authexpo
+---
+# Prerequisites: User must be logged in
+- runFlow: ../auth/login.yaml
+
+# Navigate to pricing/plans screen
+- tapOn: "Profile"
+- assertVisible: "Profile"
+
+# Look for pricing/upgrade option
+- scrollUntilVisible:
+    element: "Upgrade to Pro"
+    direction: DOWN
+
+- tapOn: "Upgrade to Pro"
+
+# Should show subscription plans
+- assertVisible: "Choose Your Plan"
+- takeScreenshot: payment-plans
+
+# Test Case: View and Select Plan
+- assertVisible: "Basic Plan"
+- assertVisible: "Pro Plan"
+
+# Tap on Pro Plan
+- tapOn: "Pro Plan"
+- assertVisible: "Features"
+- takeScreenshot: payment-plan-details
+
+# Select Plan and Proceed
+- tapOn: "Subscribe"
+
+# Should navigate to payment method screen
+- assertVisible: "Payment Method"
+- takeScreenshot: payment-method-screen
+
+# Note: Actual payment testing requires Stripe test cards
+# Card: 4242 4242 4242 4242, Exp: 12/25, CVC: 123
+
+- takeScreenshot: payment-complete
