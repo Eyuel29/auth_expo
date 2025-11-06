@@ -32,11 +32,13 @@ module.exports = {
   collectCoverageFrom: [
     'api/**/*.{ts,tsx}',
     'contexts/**/*.{ts,tsx}',
+    'components/**/*.{ts,tsx}',     // ✅ Include components
+    'app/**/*.{ts,tsx}',            // ✅ Include screens
     'hooks/**/*.{ts,tsx}',
     'lib/**/*.{ts,tsx}',
-    // Exclude UI components and type-only files for now
-    '!app/**',
-    '!components/**',
+    // Exclude specific files
+    '!app/_layout.tsx',             // Exclude root layout (complex setup)
+    '!app/+not-found.tsx',          // Exclude error pages
     '!shared/types/**',
     '!**/*.d.ts',
     '!**/node_modules/**',

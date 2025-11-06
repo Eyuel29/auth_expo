@@ -377,20 +377,184 @@ await waitFor(() => {
 });
 ```
 
+## Maestro E2E Testing
+
+### What is Maestro?
+
+Maestro is a mobile UI testing framework that allows you to write E2E tests using simple YAML syntax.
+
+**Key Features:**
+
+- Simple YAML syntax - no complex programming
+- Cross-platform - same tests for iOS and Android
+- Fast setup - minutes, not hours
+- Screenshots & videos - automatic capture
+- CI/CD ready - GitHub Actions integration
+
+### Installation
+
+```bash
+# Install Maestro
+curl -Ls "https://get.maestro.mobile.dev" | bash
+
+# Restart terminal or reload shell
+source ~/.bashrc  # or ~/.zshrc for zsh
+
+# Verify installation
+maestro --version
+```
+
+**Prerequisites:**
+
+- Android Studio (for Android testing)
+- Xcode (for iOS testing, macOS only)
+- Running emulator or simulator
+
+### Running Maestro Tests
+
+```bash
+# Run all E2E tests
+npm run test:ui
+
+# Run specific suites
+npm run test:ui:auth          # Auth flows
+npm run test:ui:navigation    # Navigation tests
+npm run test:ui:payment       # Payment flows
+
+# Run single flow
+maestro test .maestro/flows/auth/login.yaml
+```
+
+### Test Structure
+
+```
+.maestro/
+├── config.yaml              # Global configuration
+└── flows/
+    ├── auth/                # Authentication tests (5 flows)
+    ├── navigation/          # Navigation tests (2 flows)
+    └── payment/             # Payment tests (3 flows)
+```
+
+### Writing Maestro Tests
+
+**Basic flow structure:**
+
+```yaml
+appId: com.yourapp.authexpo
+---
+- launchApp
+- assertVisible: 'Welcome'
+- tapOn: 'Login'
+- inputText: 'test@example.com'
+- takeScreenshot: login-step
+```
+
+**Common commands:**
+
+- `launchApp` - Launch the app
+- `assertVisible: "Text"` - Check element is visible
+- `tapOn: "Button"` - Tap on element
+- `inputText: "Text"` - Type text
+- `scrollUntilVisible` - Scroll to find element
+- `takeScreenshot: name` - Capture screenshot
+- `waitForAnimationToEnd` - Wait for animations
+
+### Environment Variables
+
+Define in `.maestro/config.yaml`:
+
+```yaml
+env:
+  TEST_EMAIL: test@example.com
+  TEST_PASSWORD: password123
+```
+
+Use in tests:
+
+```yaml
+- inputText: '${TEST_EMAIL}'
+```
+
+### Test Coverage
+
+| Category       | Tests        | Status |
+| -------------- | ------------ | ------ |
+| Authentication | 5 flows      | ✅     |
+| Navigation     | 2 flows      | ✅     |
+| Payment        | 3 flows      | ✅     |
+| **Total**      | **10 flows** | ✅     |
+
+### CI/CD Integration
+
+Maestro tests run automatically via GitHub Actions (`.github/workflows/maestro.yml`):
+
+- On push to `main`/`dev`
+- On pull requests
+- Manual workflow dispatch
+
+### Troubleshooting
+
+**Element not found:**
+
+- Add timeout or use `scrollUntilVisible`
+- Verify text matches exactly
+- Use `optional: true` for optional elements
+
+**Tests fail in CI:**
+
+- Add longer timeouts for slower CI environment
+- Ensure app is properly installed
+- Check environment variables are set
+
+## Test Statistics
+
+### Overall Coverage
+
+- **Unit Tests**: 34+ (API + Utils)
+- **Component Tests**: 21+ (React components)
+- **Screen Tests**: 22+ (UI screens)
+- **Integration Tests**: 9 (workflows)
+- **E2E Tests**: 10 flows (Maestro)
+- **Total**: **96+ tests**
+
+### Coverage Metrics
+
+| Layer      | Coverage | Status |
+| ---------- | -------- | ------ |
+| API        | 75%+     | ✅     |
+| Contexts   | 98%      | ✅     |
+| Components | 85%+     | ✅     |
+| Screens    | 70%+     | ✅     |
+
+### Execution Time
+
+- Jest tests: 4-10 seconds
+- Maestro E2E: 15-25 minutes (per platform)
+- Total: ~40-45 minutes (parallel)
+
 ## Future Improvements
 
-- [ ] Add E2E tests with Detox (optional)
 - [ ] Increase UI component test coverage
 - [ ] Add visual regression testing
 - [ ] Add performance benchmarking
 - [ ] Add mutation testing
+- [ ] Expand Maestro test scenarios
 
 ## Resources
+
+### Jest & React Testing Library
 
 - [Jest Documentation](https://jestjs.io/)
 - [React Testing Library](https://testing-library.com/react-native)
 - [Jest Expo Documentation](https://docs.expo.dev/guides/testing-with-jest/)
 - [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
+
+### Maestro
+
+- [Maestro Documentation](https://maestro.mobile.dev/docs)
+- [Maestro GitHub](https://github.com/mobile-dev-inc/maestro)
+- [Maestro Command Reference](https://maestro.mobile.dev/reference/commands)
 
 ---
 

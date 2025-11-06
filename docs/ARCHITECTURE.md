@@ -472,44 +472,41 @@ stateDiagram-v2
 
 ## Testing Architecture
 
-### Testing Pyramid
+### Testing Strategy
 
-```mermaid
-graph TD
-    A[E2E Tests<br/>Optional]
-    B[Integration Tests<br/>9 tests]
-    C[Component Tests<br/>14 tests]
-    D[Unit Tests<br/>18 tests]
+The project implements a comprehensive testing approach with multiple layers:
 
-    A --> B
-    B --> C
-    C --> D
+| Layer           | Tool       | Tests    | Coverage           |
+| --------------- | ---------- | -------- | ------------------ |
+| **E2E**         | Maestro    | 10 flows | Full user journeys |
+| **Screen**      | Jest + RTL | 22+      | 70%+               |
+| **Component**   | Jest + RTL | 21+      | 85%+               |
+| **Integration** | Jest       | 9        | 98%                |
+| **Unit**        | Jest       | 34+      | 75%+               |
 
-    style A fill:#FFE66D
-    style B fill:#87CEEB
-    style C fill:#90EE90
-    style D fill:#4A90E2
-```
+**Total**: 96+ tests | Execution: ~4-10s (Jest), ~40-45min (Maestro)
 
 ### Test Structure
 
 ```mermaid
-graph LR
-    A[Test Files] --> B[Unit Tests<br/>api/*.test.ts]
-    A --> C[Component Tests<br/>contexts/*.test.tsx]
-    A --> D[Integration Tests<br/>integration/*.test.tsx]
+graph TD
+    A[E2E Tests<br/>Maestro - 10 flows] --> B[Screen Tests<br/>Jest + RTL - 22+]
+    B --> C[Component Tests<br/>Jest + RTL - 21+]
+    C --> D[Unit Tests<br/>Jest - 34+]
 
-    E[Mocks] --> F[API Client Mock]
-    E --> G[AsyncStorage Mock]
-    E --> H[Expo Modules Mock]
-
-    B --> E
-    C --> E
-    D --> E
-
-    style A fill:#FF6B6B
-    style E fill:#4ECDC4
+    style A fill:#7c4dff
+    style B fill:#03dac6
+    style C fill:#bb86fc
+    style D fill:#03dac6
 ```
+
+**Mocking Strategy:**
+
+- API Client: `__mocks__/api/client.ts`
+- AsyncStorage: `@react-native-async-storage/async-storage/jest`
+- Expo Modules: `jest.setup.js`
+
+**See [TESTING.md](./TESTING.md) for complete testing guide.**
 
 ---
 
