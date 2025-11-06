@@ -102,13 +102,13 @@ jobs:
             COMMITS=$(git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
           fi
           
-          # Create changelog entry
-          CHANGELOG="## [$VERSION] - $DATE
-
-$COMMITS"
+          # Create changelog entry using heredoc
+          cat > /tmp/changelog.txt <<EOF
+          ## [$VERSION] - $DATE
           
-          # Save to file for later use
-          echo "$CHANGELOG" > /tmp/changelog.txt
+          $COMMITS
+          EOF
+          
           echo "Generated changelog for $VERSION"
       
       - name: Update CHANGELOG.md
