@@ -1,0 +1,38 @@
+# Maestro Global Configuration
+# This file contains global settings for Maestro tests
+
+appId: com.yourapp.authexpo  # Update with your actual app bundle ID
+
+---
+# Environment variables for tests
+env:
+  TEST_EMAIL: test@example.com
+  TEST_PASSWORD: password123
+  TEST_USER: testuser
+  API_URL: http://localhost:8080
+
+# Global test settings
+settings:
+  # Retry configuration
+  retryOnFailure: true
+  maxRetries: 2
+  retryDelay: 1000
+
+  # Screenshot configuration
+  screenshotsOnFailure: true
+  screenshotsOnSuccess: false
+
+  # Timeouts (in milliseconds)
+  defaultTimeout: 10000
+  longTimeout: 30000
+
+  # Device configuration (optional)
+  # Uncomment and modify for specific device tests
+  # device:
+  #   ios:
+  #     deviceName: "iPhone 15"
+  #     osVersion: "17.0"
+  #   android:
+  #     deviceName: "Pixel_5_API_31"
+  #     apiLevel: 31
+

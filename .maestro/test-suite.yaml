@@ -1,0 +1,22 @@
+# Maestro Test Suite Configuration
+# This configures Maestro to run flows in subdirectories
+
+# Include all flows in subdirectories
+includeTags: []
+excludeTags: []
+
+# Flow patterns - include subdirectories
+flows:
+  - "flows/**/*.yaml"
+
+# Environment variables for all tests
+env:
+  TEST_EMAIL: test@example.com
+  TEST_PASSWORD: password123
+  TEST_USER: testuser
+
+# Execution settings
+executionOrder:
+  continueOnFailure: false
+  flowOrder: sequential
+

@@ -1,0 +1,40 @@
+# Deep Navigation Test
+# Tests navigation through multiple screens and back navigation
+
+appId: com.yourapp.authexpo
+---
+- runFlow: ../auth/login.yaml
+
+# Start from home
+- assertVisible: "Home"
+
+# Navigate to profile
+- tapOn: "Profile"
+- assertVisible: "Profile"
+
+# Test back button/gesture
+- back
+
+# Should return to previous screen
+- assertVisible: "Home"
+- takeScreenshot: nav-back-gesture
+
+# Test navigation flow
+- tapOn: "Profile"
+- assertVisible: "Profile"
+
+# If there are nested screens, test them
+# Example: Edit Profile screen
+- tapOn:
+    text: "Edit Profile"
+    optional: true
+
+- runFlow:
+    when:
+      visible: "Save"
+    commands:
+      - back
+      - assertVisible: "Profile"
+
+- takeScreenshot: nav-deep-complete
+

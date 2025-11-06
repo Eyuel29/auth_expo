@@ -1,0 +1,38 @@
+# One-Time Payment Flow Test
+# Tests one-time payment functionality
+
+appId: com.yourapp.authexpo
+---
+- runFlow: ../auth/login.yaml
+
+# Navigate to purchase screen
+- tapOn: "Profile"
+- scrollUntilVisible:
+    element: "Buy Credits"
+    direction: DOWN
+    optional: true
+
+# If Buy Credits option exists, test it
+- tapOn: "Buy Credits"
+- assertVisible: "Select Amount"
+- tapOn: "100 Credits - $9.99"
+- takeScreenshot: payment-onetime-selected
+
+- tapOn: "Purchase"
+
+# Payment screen
+- assertVisible: "Payment"
+
+# Use existing payment method
+- tapOn: "Pay $9.99"
+
+# Wait for payment processing
+- waitForAnimationToEnd
+
+# Check for success message
+- assertVisible: "Payment Successful"
+- takeScreenshot: payment-onetime-success
+
+# Verify credits added
+- tapOn: "Close"
+- assertVisible: "100 Credits"

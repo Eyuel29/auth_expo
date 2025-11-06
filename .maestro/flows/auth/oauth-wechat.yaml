@@ -1,0 +1,27 @@
+# WeChat OAuth Flow Test
+# Tests WeChat OAuth authentication
+
+appId: com.yourapp.authexpo
+---
+- launchApp
+- clearState
+
+- assertVisible: "Sign In"
+- assertVisible: "Continue with WeChat"
+- takeScreenshot: wechat-oauth-button
+
+# Tap WeChat OAuth button
+- tapOn: "Continue with WeChat"
+
+# Note: WeChat OAuth testing requires:
+# 1. WeChat test account
+# 2. WeChat app installed (for mobile)
+# 3. Proper WeChat developer configuration
+
+# Wait for potential redirect or loading
+- waitForAnimationToEnd
+
+# Take screenshot of result
+- takeScreenshot: wechat-oauth-result
+
+# Check result based on your WeChat OAuth implementation
