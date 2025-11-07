@@ -167,8 +167,8 @@ jobs:
           
           xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
           
-          # Launch the app
-          BUNDLE_ID=$(defaults read "$APP_PATH/Info.plist" CFBundleIdentifier)
+          # Launch the app (use PlistBuddy instead of defaults)
+          BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP_PATH/Info.plist")
           echo "Launching app with bundle ID: $BUNDLE_ID"
           xcrun simctl launch "$SIMULATOR_ID" "$BUNDLE_ID"
           sleep 3
@@ -349,44 +349,7 @@ jobs:
           heap-size: 256M
           emulator-boot-timeout: 900
           script: |
-            # Only run Maestro tests on specific branches
-            BRANCH="${{ github.ref_name }}"
-            EVENT="${{ github.event_name }}"
-            echo "Branch: $BRANCH"
-            echo "Event: $EVENT"
-            
-            if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] && [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then
-              echo "Skipping Maestro tests on branch: $BRANCH"
-              echo "Tests only run on: main, dev, project-foundation (or manual trigger)"
-              exit 0
-            fi
-            
-            echo "Running Maestro tests on branch: $BRANCH"
-            
-            # Install APK
-            adb install android/app/build/outputs/apk/debug/app-debug.apk
-            sleep 5
-            
-            # Run Maestro tests
-            TEST_SUITE="${{ github.event.inputs.test_suite }}"
-            
-            # Auth tests
-            if [ "$TEST_SUITE" = "auth" ] || [ -z "$TEST_SUITE" ]; then
-              maestro test .maestro/flows/auth/ --format junit --output maestro-android-auth.xml || echo "Auth tests failed"
-            fi
-            
-            # Navigation tests  
-            if [ "$TEST_SUITE" = "navigation" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then
-              maestro test .maestro/flows/navigation/ --format junit --output maestro-android-navigation.xml || echo "Navigation tests failed"
-            fi
-            
-            # Payment tests
-            if [ "$TEST_SUITE" = "payment" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then
-              maestro test .maestro/flows/payment/ --format junit --output maestro-android-payment.xml || echo "Payment tests failed"
-            fi
-            
-            # Create empty result if no tests ran
-            ls maestro-android-*.xml >/dev/null 2>&1 || echo '<?xml version="1.0"?><testsuites></testsuites>' > maestro-android-empty.xml
+            BRANCH="${{ github.ref_name }}"; EVENT="${{ github.event_name }}"; echo "Branch: $BRANCH, Event: $EVENT"; if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] && [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then echo "Skipping Maestro tests"; exit 0; fi; echo "Running Maestro tests"; adb install android/app/build/outputs/apk/debug/app-debug.apk; sleep 5; TEST_SUITE="${{ github.event.inputs.test_suite }}"; if [ "$TEST_SUITE" = "auth" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/auth/ --format junit --output maestro-android-auth.xml || echo "Auth tests failed"; fi; if [ "$TEST_SUITE" = "navigation" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/navigation/ --format junit --output maestro-android-navigation.xml || echo "Navigation tests failed"; fi; if [ "$TEST_SUITE" = "payment" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/payment/ --format junit --output maestro-android-payment.xml || echo "Payment tests failed"; fi; ls maestro-android-*.xml >/dev/null 2>&1 || echo '<?xml version="1.0"?><testsuites></testsuites>' > maestro-android-empty.xml
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
