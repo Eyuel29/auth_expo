@@ -53,12 +53,6 @@ jobs:
       - name: Verify Maestro installation
         run: maestro --version
       
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-      
       - name: Setup iOS Simulator
         run: |
           # List available simulators and runtimes
@@ -275,12 +269,6 @@ jobs:
       
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
       
       - name: Enable KVM for emulator
         run: |
