@@ -5,7 +5,7 @@ appId: com.joel.authexpo
 ---
 # Prerequisite: User must be logged in
 
-# Navigate to profile screen  
+# Navigate to profile screen
 - tapOn: "Profile"
 - assertVisible: "Edit Profile"
 - takeScreenshot: profile-before-logout
