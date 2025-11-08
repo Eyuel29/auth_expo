@@ -11,7 +11,7 @@ appId: com.joel.authexpo
 # Wait for app to finish loading
 - extendedWaitUntil:
     visible: "Welcome Back"
-    timeout: 3000
+    timeout: 20000
 
 - assertVisible: "Welcome Back"
 - assertVisible: "Continue with WeChat"

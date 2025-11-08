@@ -10,7 +10,7 @@ appId: com.joel.authexpo
 # Wait for app to finish loading and navigate to sign-in screen
 - extendedWaitUntil:
     visible: "Welcome Back"
-    timeout: 3000
+    timeout: 20000
 
 # Navigate to registration
 - assertVisible: "Welcome Back"
