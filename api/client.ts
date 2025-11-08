@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_SERVER_URL;
+const API_BASE_URL = 'https://syn-exp-1.onrender.com';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
