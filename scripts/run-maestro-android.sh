@@ -24,12 +24,6 @@ fi
 adb install -r "${APK_PATH}"
 sleep 5
 
-TEST_EMAIL="auth-bot+${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}@example.com"
-TEST_USER="authBotUser${GITHUB_RUN_ID:-0}"
-TEST_PASSWORD="${MAESTRO_TEST_PASSWORD:-AuthBotTest123!}"
-
-export TEST_EMAIL TEST_USER TEST_PASSWORD
-
 TEST_SUITE="${TEST_SUITE:-}"
 
 run_flow() {
