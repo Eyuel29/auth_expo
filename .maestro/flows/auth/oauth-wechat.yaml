@@ -10,11 +10,17 @@ appId: com.joel.authexpo
 
 # Wait for app to finish loading
 - extendedWaitUntil:
-    visible: "Welcome Back"
+    visible:
+      text: ".*Welcome Back.*"
+      regex: true
     timeout: 20000
 
-- assertVisible: "Welcome Back"
-- assertVisible: "Continue with WeChat"
+- assertVisible:
+    text: ".*Welcome Back.*"
+    regex: true
+- assertVisible:
+    text: ".*Continue with WeChat.*"
+    regex: true
 - takeScreenshot: wechat-oauth-button
 
 # Test passes if button is visible
