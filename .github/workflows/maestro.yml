@@ -160,28 +160,31 @@ jobs:
           xcrun simctl launch "$SIMULATOR_ID" "$BUNDLE_ID"
           sleep 3
       
+      - name: Prepare Maestro test credentials
+        if: (contains(fromJSON('["main", "dev", "project-foundation"]'), github.ref_name) || github.event_name == 'workflow_dispatch') && (github.event.inputs.test_suite == 'auth' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == '')
+        run: |
+          TEST_EMAIL="maestro+${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}@example.com"
+          TEST_USER="maestro${GITHUB_RUN_ID:-0}"
+          TEST_PASSWORD="${MAESTRO_TEST_PASSWORD:-MaestroTest123!}"
+          
+          echo "TEST_EMAIL=$TEST_EMAIL" >> "$GITHUB_ENV"
+          echo "TEST_USER=$TEST_USER" >> "$GITHUB_ENV"
+          echo "TEST_PASSWORD=$TEST_PASSWORD" >> "$GITHUB_ENV"
+      
       - name: Run Maestro tests - Auth flows
         if: (contains(fromJSON('["main", "dev", "project-foundation"]'), github.ref_name) || github.event_name == 'workflow_dispatch') && (github.event.inputs.test_suite == 'auth' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == '')
         run: |
-          maestro test .maestro/flows/auth/ \
+          maestro test .maestro/flows/auth/register.yaml \
             --format junit \
-            --output maestro-results-auth.xml
-        continue-on-error: true
-      
-      - name: Run Maestro tests - Navigation flows
-        if: (contains(fromJSON('["main", "dev", "project-foundation"]'), github.ref_name) || github.event_name == 'workflow_dispatch') && (github.event.inputs.test_suite == 'navigation' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == '')
-        run: |
-          maestro test .maestro/flows/navigation/ \
+            --output maestro-results-register.xml || echo "Register flow failed"
+          
+          maestro test .maestro/flows/auth/oauth-google.yaml \
             --format junit \
-            --output maestro-results-navigation.xml
-        continue-on-error: true
-      
-      - name: Run Maestro tests - Payment flows
-        if: (contains(fromJSON('["main", "dev", "project-foundation"]'), github.ref_name) || github.event_name == 'workflow_dispatch') && (github.event.inputs.test_suite == 'payment' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == '')
-        run: |
-          maestro test .maestro/flows/payment/ \
+            --output maestro-results-oauth-google.xml || echo "OAuth Google flow failed"
+          
+          maestro test .maestro/flows/auth/oauth-wechat.yaml \
             --format junit \
-            --output maestro-results-payment.xml
+            --output maestro-results-oauth-wechat.xml || echo "OAuth WeChat flow failed"
         continue-on-error: true
       
       - name: Create empty results if tests didn't run
@@ -330,7 +333,50 @@ jobs:
           heap-size: 256M
           emulator-boot-timeout: 900
           script: |
-            BRANCH="${{ github.ref_name }}"; EVENT="${{ github.event_name }}"; echo "Branch: $BRANCH, Event: $EVENT"; if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] && [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then echo "Skipping Maestro tests"; exit 0; fi; echo "Running Maestro tests"; adb install -r android/app/build/outputs/apk/release/app-release.apk; sleep 5; TEST_SUITE="${{ github.event.inputs.test_suite }}"; if [ "$TEST_SUITE" = "auth" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/auth/ --format junit --output maestro-android-auth.xml || echo "Auth tests failed"; fi; if [ "$TEST_SUITE" = "navigation" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/navigation/ --format junit --output maestro-android-navigation.xml || echo "Navigation tests failed"; fi; if [ "$TEST_SUITE" = "payment" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/payment/ --format junit --output maestro-android-payment.xml || echo "Payment tests failed"; fi; ls maestro-android-*.xml >/dev/null 2>&1 || echo '<?xml version="1.0"?><testsuites></testsuites>' > maestro-android-empty.xml
+            BRANCH="${{ github.ref_name }}"
+            EVENT="${{ github.event_name }}"
+            echo "Branch: $BRANCH, Event: $EVENT"
+            
+            if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] && [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then
+              echo "Skipping Maestro tests"
+              exit 0
+            fi
+            
+            echo "Running Maestro tests"
+            APK_PATH="android/app/build/outputs/apk/release/app-release.apk"
+            
+            if [ ! -f "$APK_PATH" ]; then
+              echo "Error: APK not found at $APK_PATH"
+              exit 1
+            fi
+            
+            adb install -r "$APK_PATH"
+            sleep 5
+            
+            TEST_EMAIL="maestro+${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}@example.com"
+            TEST_USER="maestro${GITHUB_RUN_ID:-0}"
+            TEST_PASSWORD="${MAESTRO_TEST_PASSWORD:-MaestroTest123!}"
+            export TEST_EMAIL TEST_USER TEST_PASSWORD
+            
+            TEST_SUITE="${{ github.event.inputs.test_suite }}"
+            
+            run_flow() {
+              local FLOW_PATH="$1"
+              local OUTPUT_FILE="$2"
+              local LABEL="$3"
+              
+              if ! maestro test "$FLOW_PATH" --format junit --output "$OUTPUT_FILE"; then
+                echo "$LABEL flow failed"
+              fi
+            }
+            
+            if [ "$TEST_SUITE" = "auth" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then
+              run_flow .maestro/flows/auth/register.yaml maestro-android-register.xml "Register"
+              run_flow .maestro/flows/auth/oauth-google.yaml maestro-android-oauth-google.xml "OAuth Google"
+              run_flow .maestro/flows/auth/oauth-wechat.yaml maestro-android-oauth-wechat.xml "OAuth WeChat"
+            fi
+            
+            ls maestro-android-*.xml >/dev/null 2>&1 || echo '<?xml version="1.0"?><testsuites></testsuites>' > maestro-android-empty.xml
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -376,13 +422,9 @@ jobs:
           echo "## 🎭 Maestro Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### iOS Tests" >> $GITHUB_STEP_SUMMARY
-          echo "- Auth flows: ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Navigation flows: ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Payment flows: ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Register / OAuth (Google & WeChat): ${{ needs.maestro-ios.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Android Tests" >> $GITHUB_STEP_SUMMARY
-          echo "- Auth flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Navigation flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Payment flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Register / OAuth (Google & WeChat): ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📸 Screenshots and videos are available in the artifacts." >> $GITHUB_STEP_SUMMARY

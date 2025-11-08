@@ -29,11 +29,11 @@ appId: com.joel.authexpo
 # Test Case: Successful Registration
 - tapOn:
     text: "Choose a username"
-- inputText: "newuser"
+- inputText: "${TEST_USER}"
 
 - tapOn:
     text: "Enter your email"
-- inputText: "newuser@example.com"
+- inputText: "${TEST_EMAIL}"
 
 - tapOn:
     text: "Create a password"

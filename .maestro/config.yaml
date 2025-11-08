@@ -6,9 +6,9 @@ appId: com.joel.authexpo  # Actual working bundle ID
 ---
 # Environment variables for tests
 env:
-  TEST_EMAIL: test@example.com
-  TEST_PASSWORD: password123
-  TEST_USER: testuser
+  TEST_EMAIL: maestro-tester@example.com
+  TEST_PASSWORD: MaestroTest123!
+  TEST_USER: maestroTester
   API_URL: http://localhost:8080
 
 # Global test settings

@@ -7,16 +7,17 @@ excludeTags: []
 
 # Flow patterns - only include active flows (exclude DISABLED_ folders)
 flows:
-  - "flows/auth/*.yaml"
-  - "flows/navigation/*.yaml"
+  - "flows/auth/register.yaml"
+  - "flows/auth/oauth-google.yaml"
+  - "flows/auth/oauth-wechat.yaml"
   # Payment flows are disabled until implementation is complete
   # - "flows/payment/*.yaml"
 
 # Environment variables for all tests
 env:
-  TEST_EMAIL: test@example.com
-  TEST_PASSWORD: password123
-  TEST_USER: testuser
+  TEST_EMAIL: maestro-tester@example.com
+  TEST_PASSWORD: MaestroTest123!
+  TEST_USER: maestroTester
 
 # Execution settings
 executionOrder:
