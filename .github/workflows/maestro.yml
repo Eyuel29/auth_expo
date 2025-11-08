@@ -333,12 +333,7 @@ jobs:
           heap-size: 256M
           emulator-boot-timeout: 900
           script: >
-            BRANCH="${{ github.ref_name }}"; EVENT="${{ github.event_name }}";
-            echo "Branch: $BRANCH, Event: $EVENT";
-            if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] &&
-               [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then
-              echo "Skipping Maestro tests"; exit 0; fi;
-            echo "Running Maestro tests";
+            echo "Running Maestro tests for branch ${{ github.ref_name }}";
             APK_PATH="android/app/build/outputs/apk/release/app-release.apk";
             if [ ! -f "$APK_PATH" ]; then
               echo "Error: APK not found at $APK_PATH"; exit 1; fi;
