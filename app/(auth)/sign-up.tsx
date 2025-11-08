@@ -150,7 +150,11 @@ export default function SignUpScreen() {
         <View className="flex-1 justify-center px-6 py-10">
           {/* Header */}
           <View className="mb-8">
-            <Text className="text-4xl font-bold text-gray-900 mb-2">
+            <Text
+              className="text-4xl font-bold text-gray-900 mb-2"
+              accessibilityLabel="create-account-title"
+              accessibilityRole="header"
+            >
               Create Account
             </Text>
             <Text className="text-lg text-gray-600">

@@ -20,7 +20,7 @@ settings:
 
   # Screenshot configuration
   screenshotsOnFailure: true
-  screenshotsOnSuccess: false
+  screenshotsOnSuccess: true
 
   # Timeouts (in milliseconds)
   defaultTimeout: 10000

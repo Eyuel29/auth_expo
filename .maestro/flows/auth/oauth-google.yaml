@@ -10,17 +10,11 @@ appId: com.joel.authexpo
 
 # Wait for app to finish loading
 - extendedWaitUntil:
-    visible:
-      text: ".*Welcome Back.*"
-      regex: true
+    visible: "welcome-back-title"
     timeout: 20000
 
-- assertVisible:
-    text: ".*Welcome Back.*"
-    regex: true
-- assertVisible:
-    text: ".*Continue with Google.*"
-    regex: true
+- assertVisible: "welcome-back-title"
+- assertVisible: "continue-with-google-button"
 - takeScreenshot: google-oauth-button
 
 # Test passes if button is visible

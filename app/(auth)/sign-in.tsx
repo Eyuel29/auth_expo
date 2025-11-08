@@ -126,7 +126,11 @@ export default function SignInScreen() {
         <View className="flex-1 justify-center px-6 py-10">
           {/* Header */}
           <View className="mb-8">
-            <Text className="text-4xl font-bold text-gray-900 mb-2">
+            <Text
+              className="text-4xl font-bold text-gray-900 mb-2"
+              accessibilityLabel="welcome-back-title"
+              accessibilityRole="header"
+            >
               Welcome Back
             </Text>
             <Text className="text-lg text-gray-600">
@@ -243,6 +247,8 @@ export default function SignInScreen() {
               }`}
               onPress={handleGoogleSignIn}
               disabled={anyLoading}
+              accessibilityLabel="continue-with-google-button"
+              accessibilityRole="button"
             >
               {googleLoading ? (
                 <ActivityIndicator color="#4285F4" />
@@ -262,6 +268,8 @@ export default function SignInScreen() {
               }`}
               onPress={handleWeChatSignIn}
               disabled={anyLoading}
+              accessibilityLabel="continue-with-wechat-button"
+              accessibilityRole="button"
             >
               {wechatLoading ? (
                 <ActivityIndicator color="white" />

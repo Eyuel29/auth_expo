@@ -9,19 +9,18 @@ appId: com.joel.authexpo
 
 # Wait for app to finish loading and navigate to sign-in screen
 - extendedWaitUntil:
-    visible:
-      text: ".*Welcome Back.*"
-      regex: true
+    visible: "welcome-back-title"
     timeout: 20000
 
 # Navigate to registration
-- assertVisible:
-    text: ".*Welcome Back.*"
-    regex: true
+- assertVisible: "welcome-back-title"
 - tapOn: "Sign Up"
 
 # Verify registration screen
-- assertVisible: "Create Account"
+- extendedWaitUntil:
+    visible: "create-account-title"
+    timeout: 10000
+- assertVisible: "create-account-title"
 - assertVisible: "Email"
 - assertVisible: 
     text: "Username"
