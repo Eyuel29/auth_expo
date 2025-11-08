@@ -55,13 +55,11 @@ jobs:
       
       - name: Setup iOS Simulator
         run: |
-          # List available simulators and runtimes
           echo "Available simulators:"
           xcrun simctl list devices available
           echo "Available runtimes:"
           xcrun simctl list runtimes
           
-          # Use stable iOS 18.x runtime (avoid beta versions like iOS 26)
           RUNTIME=$(xcrun simctl list runtimes | grep "iOS 18" | tail -1 | grep -oE 'com\.apple\.CoreSimulator\.SimRuntime\.[^ ]+')
           
           if [ -z "$RUNTIME" ]; then
@@ -71,10 +69,8 @@ jobs:
           
           echo "Using runtime: $RUNTIME"
           
-          # Try to find existing Maestro-iPhone-15 first
           DEVICE_ID=$(xcrun simctl list devices | grep "Maestro-iPhone-15" | grep -oE '\([A-F0-9-]+\)' | tr -d '()' | head -1)
           
-          # If not found, create new one
           if [ -z "$DEVICE_ID" ]; then
             echo "Creating new Maestro-iPhone-15 simulator..."
             DEVICE_ID=$(xcrun simctl create "Maestro-iPhone-15" com.apple.CoreSimulator.SimDeviceType.iPhone-15 "$RUNTIME" 2>&1)
@@ -95,11 +91,9 @@ jobs:
           echo "Device ID: $DEVICE_ID"
           echo "SIMULATOR_ID=$DEVICE_ID" >> $GITHUB_ENV
           
-          # Boot simulator
           echo "Booting simulator..."
           xcrun simctl boot "$DEVICE_ID" 2>&1 || echo "Simulator may already be booted"
           
-          # Wait for simulator to boot (bootstatus blocks until ready)
           echo "Waiting for simulator to boot..."
           xcrun simctl bootstatus "$DEVICE_ID" -b
           echo "Simulator booted successfully!"
@@ -116,11 +110,9 @@ jobs:
         run: |
           cd ios
           
-          # List contents to debug
           echo "Contents of ios directory:"
           ls -la
           
-          # Find workspace (use -d flag to only find directories)
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" -type d | head -1 | sed 's|^\./||')
           
           if [ -z "$WORKSPACE" ]; then
@@ -130,15 +122,12 @@ jobs:
           
           echo "Found workspace: $WORKSPACE"
           
-          # List available schemes
           echo "Listing schemes in workspace:"
           xcodebuild -workspace "$WORKSPACE" -list
           
-          # Get scheme from workspace (first non-Pods scheme)
           SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list 2>/dev/null | sed -n '/Schemes:/,/^$/p' | grep -v "Schemes:" | grep -v "Pods" | grep -v "^$" | head -1 | xargs)
           
           if [ -z "$SCHEME" ]; then
-            # Fallback: use workspace name without extension
             SCHEME="${WORKSPACE%.xcworkspace}"
             echo "No scheme found in list, using fallback: $SCHEME"
           else
@@ -148,11 +137,10 @@ jobs:
           echo "Building with workspace: $WORKSPACE and scheme: $SCHEME"
           echo "Target simulator ID: $SIMULATOR_ID"
           
-          # Build for the specific simulator we created
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$SCHEME" \
-            -configuration Debug \
+            -configuration Release \
             -sdk iphonesimulator \
             -derivedDataPath build \
             -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
@@ -161,13 +149,12 @@ jobs:
       
       - name: Install app on simulator
         run: |
-          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -name "*.app" -type d | head -1)
+          APP_PATH=$(find ios/build/Build/Products/Release-iphonesimulator -name "*.app" -type d | head -1)
           echo "Installing app from: $APP_PATH"
           echo "Installing to simulator: $SIMULATOR_ID"
           
           xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
           
-          # Launch the app (use PlistBuddy instead of defaults)
           BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP_PATH/Info.plist")
           echo "Launching app with bundle ID: $BUNDLE_ID"
           xcrun simctl launch "$SIMULATOR_ID" "$BUNDLE_ID"
@@ -200,7 +187,6 @@ jobs:
       - name: Create empty results if tests didn't run
         if: always()
         run: |
-          # Create empty result file if no test results exist
           if ! ls maestro-results-*.xml 1> /dev/null 2>&1; then
             echo '<?xml version="1.0" encoding="UTF-8"?><testsuites><testsuite name="Maestro iOS" tests="0" skipped="0" failures="0" errors="0"></testsuite></testsuites>' > maestro-results-empty.xml
             echo "No test results found, created empty result file"
@@ -247,8 +233,6 @@ jobs:
         run: |
           echo "Disk space before cleanup:"
           df -h
-          
-          # Aggressive cleanup BEFORE installing build tools
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
@@ -258,7 +242,6 @@ jobs:
           sudo rm -rf /opt/az
           sudo docker image prune -a -f || true
           sudo apt-get clean
-          
           echo "Disk space after cleanup:"
           df -h
       
@@ -320,9 +303,7 @@ jobs:
       - name: Build Android APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --max-workers=2
-          
-          # Clean up intermediate build files (keep the APK!)
+          ./gradlew assembleRelease --no-daemon --max-workers=2
           find . -type d -name "intermediates" -exec rm -rf {} + || true
           find . -type d -name ".cxx" -exec rm -rf {} + || true
           rm -rf ~/.gradle/caches/build-cache-* || true
@@ -349,7 +330,7 @@ jobs:
           heap-size: 256M
           emulator-boot-timeout: 900
           script: |
-            BRANCH="${{ github.ref_name }}"; EVENT="${{ github.event_name }}"; echo "Branch: $BRANCH, Event: $EVENT"; if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] && [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then echo "Skipping Maestro tests"; exit 0; fi; echo "Running Maestro tests"; adb install android/app/build/outputs/apk/debug/app-debug.apk; sleep 5; TEST_SUITE="${{ github.event.inputs.test_suite }}"; if [ "$TEST_SUITE" = "auth" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/auth/ --format junit --output maestro-android-auth.xml || echo "Auth tests failed"; fi; if [ "$TEST_SUITE" = "navigation" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/navigation/ --format junit --output maestro-android-navigation.xml || echo "Navigation tests failed"; fi; if [ "$TEST_SUITE" = "payment" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/payment/ --format junit --output maestro-android-payment.xml || echo "Payment tests failed"; fi; ls maestro-android-*.xml >/dev/null 2>&1 || echo '<?xml version="1.0"?><testsuites></testsuites>' > maestro-android-empty.xml
+            BRANCH="${{ github.ref_name }}"; EVENT="${{ github.event_name }}"; echo "Branch: $BRANCH, Event: $EVENT"; if [ "$EVENT" != "workflow_dispatch" ] && [ "$BRANCH" != "main" ] && [ "$BRANCH" != "dev" ] && [ "$BRANCH" != "project-foundation" ]; then echo "Skipping Maestro tests"; exit 0; fi; echo "Running Maestro tests"; adb install -r android/app/build/outputs/apk/release/app-release.apk; sleep 5; TEST_SUITE="${{ github.event.inputs.test_suite }}"; if [ "$TEST_SUITE" = "auth" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/auth/ --format junit --output maestro-android-auth.xml || echo "Auth tests failed"; fi; if [ "$TEST_SUITE" = "navigation" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/navigation/ --format junit --output maestro-android-navigation.xml || echo "Navigation tests failed"; fi; if [ "$TEST_SUITE" = "payment" ] || [ "$TEST_SUITE" = "all" ] || [ -z "$TEST_SUITE" ]; then maestro test .maestro/flows/payment/ --format junit --output maestro-android-payment.xml || echo "Payment tests failed"; fi; ls maestro-android-*.xml >/dev/null 2>&1 || echo '<?xml version="1.0"?><testsuites></testsuites>' > maestro-android-empty.xml
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -405,4 +386,3 @@ jobs:
           echo "- Payment flows: ${{ needs.maestro-android.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📸 Screenshots and videos are available in the artifacts." >> $GITHUB_STEP_SUMMARY
-
