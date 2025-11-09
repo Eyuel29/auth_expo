@@ -160,6 +160,17 @@ jobs:
           xcrun simctl launch "$SIMULATOR_ID" "$BUNDLE_ID"
           sleep 3
       
+      - name: Prepare Maestro test credentials
+        if: (contains(fromJSON('["main", "dev", "project-foundation"]'), github.ref_name) || github.event_name == 'workflow_dispatch') && (github.event.inputs.test_suite == 'auth' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == '')
+        run: |
+          TEST_EMAIL="auth-bot+${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}@example.com"
+          TEST_USER="authBotUser${GITHUB_RUN_ID:-0}"
+          TEST_PASSWORD="${MAESTRO_TEST_PASSWORD:-AuthBotTest123!}"
+          
+          echo "TEST_EMAIL=$TEST_EMAIL" >> "$GITHUB_ENV"
+          echo "TEST_USER=$TEST_USER" >> "$GITHUB_ENV"
+          echo "TEST_PASSWORD=$TEST_PASSWORD" >> "$GITHUB_ENV"
+      
       - name: Run Maestro tests - Auth flows
         if: (contains(fromJSON('["main", "dev", "project-foundation"]'), github.ref_name) || github.event_name == 'workflow_dispatch') && (github.event.inputs.test_suite == 'auth' || github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == '')
         run: |
