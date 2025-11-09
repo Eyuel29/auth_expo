@@ -32,19 +32,19 @@ appId: com.joel.authexpo
 # Test Case: Successful Registration
 - tapOn:
     text: "Choose a username"
-- inputText: "${TEST_USER}"
+- inputText: "authBotUser"
 
 - tapOn:
     text: "Enter your email"
-- inputText: "${TEST_EMAIL}"
+- inputText: "auth-bot@example.com"
 
 - tapOn:
     text: "Create a password"
-- inputText: "${TEST_PASSWORD}"
+- inputText: "AuthBotTest123!"
 
 - tapOn:
     text: "Confirm your password"
-- inputText: "${TEST_PASSWORD}"
+- inputText: "AuthBotTest123!"
 
 - takeScreenshot: register-filled
 - tapOn: "Create Account"
