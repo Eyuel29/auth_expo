@@ -15,9 +15,11 @@ This document provides comprehensive information about the testing infrastructur
 
 ### Test Types
 
-1. **Unit Tests** - Test individual functions and modules in isolation
-2. **Component Tests** - Test React components and hooks
-3. **Integration Tests** - Test complete workflows end-to-end
+1. **Unit Tests** – Auth and payment APIs plus utility helpers
+2. **Component Tests** – Shared UI components
+3. **Screen Tests** – Expo Router screens (auth + profile flows)
+4. **Integration Tests** – Auth context and storage workflows end-to-end
+5. **Maestro Flows** – Mobile UI automation covering auth journeys
 
 ## Directory Structure
 
@@ -92,24 +94,26 @@ Configures the test environment with:
 
 ## Test Coverage
 
-### Current Coverage (as of latest run)
+### Current Coverage (Clover report)
 
-```
-File               | % Stmts | % Branch | % Funcs | % Lines |
--------------------|---------|----------|---------|---------|
-All files          |   42.29 |    12.82 |   42.42 |   42.42 |
-api/               |   73.62 |    47.22 |   81.81 |   73.62 |
-  auth.ts          |   73.03 |    47.22 |   81.81 |   73.03 |
-  client.ts        |     100 |      100 |     100 |     100 |
-contexts/          |   98.64 |    66.66 |     100 |   98.64 |
-  auth-context.tsx |   98.64 |    66.66 |     100 |   98.64 |
-```
+| Metric     | Value |
+| ---------- | ----- |
+| Statements | 57%   |
+| Branches   | 31%   |
+| Functions  | 64%   |
+| Lines      | 57%   |
+
+**Breakdown Highlights**
+
+- `api/` – 69% statement coverage (auth + payment clients)
+- `contexts/auth-context.tsx` – 98% statement coverage
+- `components/` + `screens/` – driven by screen-level tests (0% for untested stubs flagged by coverage report)
 
 ### Coverage Goals
 
-- ✅ **Core Auth Logic**: 73%+ coverage (API layer)
-- ✅ **Context/Hooks**: 98%+ coverage
-- ⏳ **UI Components**: 0% (not yet tested - future work)
+- ✅ Core auth and context modules above 60%
+- 🔄 Raise overall statements to ≥60% once payment UI is fully exercised
+- 🔄 Extend branch coverage by adding unhappy-path screen tests
 
 ## Writing Tests
 
@@ -418,8 +422,8 @@ npm run test:ui
 
 # Run specific suites
 npm run test:ui:auth          # Auth flows
-npm run test:ui:navigation    # Navigation tests
-npm run test:ui:payment       # Payment flows
+npm run test:ui:navigation    # (Currently prints placeholder message)
+npm run test:ui:payment       # (Currently prints placeholder message)
 
 # Run single flow
 maestro test .maestro/flows/auth/login.yaml
@@ -431,9 +435,11 @@ maestro test .maestro/flows/auth/login.yaml
 .maestro/
 ├── config.yaml              # Global configuration
 └── flows/
-    ├── auth/                # Authentication tests (5 flows)
-    ├── navigation/          # Navigation tests (2 flows)
-    └── payment/             # Payment tests (3 flows)
+    ├── auth/                # Active authentication flows (3)
+    └── _disabled/           # Archived navigation/payment flows awaiting backend parity
+        ├── login.yaml
+        ├── logout.yaml
+        └── navigation/
 ```
 
 ### Writing Maestro Tests
@@ -480,10 +486,10 @@ Use in tests:
 
 | Category       | Tests        | Status |
 | -------------- | ------------ | ------ |
-| Authentication | 5 flows      | ✅     |
-| Navigation     | 2 flows      | ✅     |
-| Payment        | 3 flows      | ✅     |
-| **Total**      | **10 flows** | ✅     |
+| Authentication | 3 flows      | ✅     |
+| Navigation     | 0 (disabled) | ⏸️     |
+| Payment        | 0 (disabled) | ⏸️     |
+| **Total**      | **3 flows**  | ✅     |
 
 ### CI/CD Integration
 
@@ -509,29 +515,31 @@ Maestro tests run automatically via GitHub Actions (`.github/workflows/maestro.y
 
 ## Test Statistics
 
-### Overall Coverage
+### Test Counts (Jest)
 
-- **Unit Tests**: 34+ (API + Utils)
-- **Component Tests**: 21+ (React components)
-- **Screen Tests**: 22+ (UI screens)
-- **Integration Tests**: 9 (workflows)
-- **E2E Tests**: 10 flows (Maestro)
-- **Total**: **96+ tests**
+| Suite                        | Specs   | Notes                               |
+| ---------------------------- | ------- | ----------------------------------- |
+| API (`api/*.test.ts`)        | 49      | Auth + payment client scenarios     |
+| Context (`contexts/`)        | 14      | Auth provider happy + failure paths |
+| Integration (`integration/`) | 9       | Auth workflow and persistence       |
+| Components (`components/`)   | 4       | Layout container smoke coverage     |
+| Screens (`screens/`)         | 25      | Sign-in and profile UI behaviour    |
+| **Total**                    | **101** |                                     |
 
-### Coverage Metrics
+### Coverage Metrics (clover)
 
-| Layer      | Coverage | Status |
-| ---------- | -------- | ------ |
-| API        | 75%+     | ✅     |
-| Contexts   | 98%      | ✅     |
-| Components | 85%+     | ✅     |
-| Screens    | 70%+     | ✅     |
+| Layer    | Statements | Notes                        |
+| -------- | ---------- | ---------------------------- |
+| API      | 69%        | axios mocks and error cases  |
+| Contexts | 98%        | Auth state machine           |
+| Screens  | 40%        | Focus on auth happy paths    |
+| Overall  | 57%        | 228 / 400 statements covered |
 
 ### Execution Time
 
-- Jest tests: 4-10 seconds
-- Maestro E2E: 15-25 minutes (per platform)
-- Total: ~40-45 minutes (parallel)
+- Jest tests: ~45 seconds on CI runners
+- Maestro auth suite: ~12-15 minutes per platform (serial)
+- Combined (CI pipelines): ~20 minutes end-to-end when run sequentially
 
 ## Future Improvements
 

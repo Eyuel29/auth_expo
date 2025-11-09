@@ -42,7 +42,7 @@ A cross-platform mobile application built with Expo and React Native, featuring:
 - 📱 Cross-platform support (iOS, Android, Web)
 - ⚡ Type-safe development with TypeScript
 - 🎨 Modern UI with NativeWind (Tailwind CSS)
-- 🧪 Comprehensive testing (103+ tests, 82%+ coverage)
+- 🧪 Comprehensive testing (101 Jest specs, 57% statement coverage, 3 Maestro flows)
 - 🚀 Automated CI/CD with GitHub Actions
 
 ---
@@ -85,11 +85,10 @@ A cross-platform mobile application built with Expo and React Native, featuring:
 
 ### Testing Infrastructure
 
-- ✅ 103+ automated tests
-- ✅ Unit tests (Jest)
-- ✅ Component tests (React Testing Library)
-- ✅ E2E UI tests (Maestro - 10 flows)
-- ✅ 82%+ test coverage
+- ✅ 101 automated Jest specs
+- ✅ Unit, component, screen, and integration coverage
+- ✅ Maestro auth flows (3 active YAML scripts)
+- ✅ 57% statement coverage (clover) with CI gating
 - ✅ CI/CD integrated
 
 ### Developer Experience
@@ -131,22 +130,15 @@ npm install
 
 3. **Set up environment variables**
 
-```bash
-cp .env.example .env
-```
-
-Update `.env` with your configuration:
+Create a `.env` file in the project root (templates land in Phase 3). Minimum configuration:
 
 ```env
-# Backend API URL
 EXPO_PUBLIC_SERVER_URL=http://localhost:8080
-
-# For Android Emulator:
-# EXPO_PUBLIC_SERVER_URL=http://10.0.2.2:8080
-
-# For Physical Devices (use your local IP):
-# EXPO_PUBLIC_SERVER_URL=http://192.168.1.x:8080
+EXPO_PUBLIC_API_TIMEOUT=10000
+EXPO_PUBLIC_DEBUG_MODE=true
 ```
+
+Adjust `EXPO_PUBLIC_SERVER_URL` for emulators (`http://10.0.2.2:8080`) or physical devices (your LAN IP).
 
 4. **Validate environment**
 
@@ -370,29 +362,29 @@ Comprehensive testing documentation:
 
 ### Test Coverage
 
-**Current Coverage: 82%+ overall**
+**Current Coverage: 57% overall (clover)**
 
-| Layer                   | Tests          | Coverage         | Status |
-| ----------------------- | -------------- | ---------------- | ------ |
-| **Unit Tests**          | 34+            | API: 75%+        | ✅     |
-| **Component Tests**     | 21+            | Components: 85%+ | ✅     |
-| **Screen Tests**        | 22+            | Screens: 70%+    | ✅     |
-| **Integration Tests**   | 9              | Contexts: 98%    | ✅     |
-| **E2E Tests (Maestro)** | 10 flows       | Full flows       | ✅     |
-| **Total**               | **103+ tests** | **82%+**         | ✅     |
+| Layer                   | Tests         | Coverage            | Status |
+| ----------------------- | ------------- | ------------------- | ------ |
+| **Unit Tests**          | 49            | API: 69% statements | ✅     |
+| **Component Tests**     | 4             | Components: 40%     | 🔄     |
+| **Screen Tests**        | 25            | Screens: 40%        | 🔄     |
+| **Integration Tests**   | 9             | Contexts: 98%       | ✅     |
+| **E2E Tests (Maestro)** | 3 flows       | Auth journeys       | ✅     |
+| **Total**               | **101 specs** | **57% overall**     | 🔄     |
 
 **Test Breakdown:**
 
-- ✅ Authentication: 5 E2E flows, 22+ unit/component tests
-- ✅ Navigation: 2 E2E flows
-- ✅ Payment: 3 E2E flows, 16 unit tests
-- ✅ UI Components: 21+ component tests
+- ✅ Authentication: 3 Maestro flows plus comprehensive Jest coverage
+- ⏸️ Navigation: flows parked until navigation scripts are re-enabled
+- 🔄 Payment: Maestro pending; API unit tests guard server contract
+- 🔄 UI Components: container smoke tests, broader coverage queued
 
 **Execution Time:**
 
-- Jest tests: ~4-10 seconds ⚡
-- Maestro iOS: ~15-20 minutes
-- Maestro Android: ~20-25 minutes
+- Jest tests: ~45 seconds on CI runners
+- Maestro iOS: ~12-15 minutes
+- Maestro Android: ~12-15 minutes
 
 ### Test Commands
 
@@ -404,10 +396,10 @@ npm run test:coverage     # With coverage report
 npm run test:ci           # CI mode
 
 # Maestro E2E Tests
-npm run test:ui           # All E2E flows
-npm run test:ui:auth      # Auth flows (login, register, OAuth)
-npm run test:ui:navigation # Navigation flows
-npm run test:ui:payment   # Payment flows (subscription, methods)
+npm run test:ui           # All active flows
+npm run test:ui:auth      # Auth flows (register, Google, WeChat)
+npm run test:ui:navigation # Placeholder (flows disabled)
+npm run test:ui:payment   # Placeholder (flows disabled)
 
 # Combined
 npm run test:all          # Jest + Maestro
@@ -586,7 +578,7 @@ Push/PR → Type Check → Lint → Format Check → Tests → Security Audit �
 - ✅ TypeScript type checking
 - ✅ ESLint code quality checks
 - ✅ Prettier formatting validation
-- ✅ Jest test suite (103+ tests)
+- ✅ Jest test suite (101 specs)
 - ✅ Security vulnerability scanning
 - ✅ Build verification
 
@@ -830,7 +822,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 **Current Version**: 1.0.0  
 **Status**: ✅ Production Ready  
-**Test Coverage**: 82%+ (103+ tests)  
+**Test Coverage**: 57% statements (101 specs)  
 **CI/CD**: ✅ Fully Automated  
 **Documentation**: ✅ Comprehensive
 
