@@ -14,7 +14,11 @@ appId: com.joel.authexpo
     timeout: 20000
 
 - assertVisible: "welcome-back-title"
-- assertVisible: "continue-with-google-button"
+- tapOn: "continue-with-google-button"
+- extendedWaitUntil:
+    visible: "home-hello-text"
+    timeout: 20000
+- assertVisible: "home-hello-text"
 - takeScreenshot: google-oauth-button
 
 # Test passes if button is visible

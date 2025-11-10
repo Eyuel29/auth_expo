@@ -12,7 +12,11 @@ export default function HomeScreen() {
       <View className="px-6 py-8">
         {/* Welcome Section */}
         <View className="mb-12">
-          <Text className="text-4xl font-bold text-gray-900 mb-3">
+          <Text
+            className="text-4xl font-bold text-gray-900 mb-3"
+            accessibilityLabel="home-hello-text"
+            accessibilityRole="header"
+          >
             Hello, {displayName}! 👋
           </Text>
           <Text className="text-lg text-gray-500">

@@ -311,6 +311,8 @@ export default function SignUpScreen() {
               }`}
               onPress={handleSignUp}
               disabled={anyLoading}
+              accessibilityLabel="create-account-button"
+              accessibilityRole="button"
             >
               {isLoading ? (
                 <ActivityIndicator color="white" />

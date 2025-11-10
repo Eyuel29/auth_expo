@@ -51,13 +51,7 @@ appId: com.joel.authexpo
 
 # Wait for the home screen to appear
 - extendedWaitUntil:
-    visible:
-      text: ".*Hello.*"
-      regex: true
-    timeout: 30000
-
-# Wait for navigation to home screen
-- assertVisible:
-    text: ".*Hello.*"
-    regex: true
+    visible: "home-hello-text"
+    timeout: 20000
+- assertVisible: "home-hello-text"
 - takeScreenshot: register-success

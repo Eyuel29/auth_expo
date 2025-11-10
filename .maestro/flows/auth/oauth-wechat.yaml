@@ -6,16 +6,19 @@ appId: com.joel.authexpo
 ---
 - launchApp
 - clearState
-- launchApp  # Re-launch after clearing state
+- launchApp # Re-launch after clearing state
 
 # Wait for app to finish loading
 - extendedWaitUntil:
-    visible: "welcome-back-title"
+    visible: 'welcome-back-title'
     timeout: 20000
 
-- assertVisible: "welcome-back-title"
-- assertVisible: "continue-with-wechat-button"
+- assertVisible: 'welcome-back-title'
+- tapOn: 'continue-with-wechat-button'
+- extendedWaitUntil:
+    visible: 'home-hello-text'
+    timeout: 20000
+- assertVisible: 'home-hello-text'
 - takeScreenshot: wechat-oauth-button
-
 # Test passes if button is visible
 # Actual OAuth implementation will be added later
