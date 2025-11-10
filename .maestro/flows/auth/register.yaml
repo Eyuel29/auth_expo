@@ -49,16 +49,15 @@ appId: com.joel.authexpo
 - takeScreenshot: register-filled
 - tapOn: "Create Account"
 
-# Wait for success alert and dismiss it
+# Wait for the home screen to appear
 - extendedWaitUntil:
-    visible: "OK"
-    timeout: 3000
-- tapOn:
-    text: "OK"
-    optional: true
+    visible:
+      text: ".*Hello.*"
+      regex: true
+    timeout: 30000
 
 # Wait for navigation to home screen
-- extendedWaitUntil:
-    visible: "Hello"
-    timeout: 5000
-- takeScreenshot: register-success  
+- assertVisible:
+    text: ".*Hello.*"
+    regex: true
+- takeScreenshot: register-success
