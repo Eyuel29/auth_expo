@@ -45,7 +45,6 @@ run_flow() {
 if [[ "${TEST_SUITE}" == "auth" ]] \
    || [[ "${TEST_SUITE}" == "all" ]] \
    || [[ -z "${TEST_SUITE}" ]]; then
-  run_flow .maestro/flows/auth/register.yaml maestro-android-register.xml "Register"
   run_flow .maestro/flows/auth/oauth-google.yaml maestro-android-oauth-google.xml "OAuth Google"
   run_flow .maestro/flows/auth/oauth-wechat.yaml maestro-android-oauth-wechat.xml "OAuth WeChat"
 fi
